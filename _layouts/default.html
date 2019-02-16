@@ -23,15 +23,15 @@
     <div class="site">
       <div class="sidebar" id="sidebar">
         <div class="header">
-          <h1 class="title"><a href="/"><img id="logo" src="/images/logo.png"></a></h1>
-          <span class="tagline">A responsive Jekyll theme</span>
+          <h1 class="title"><a href="/"><!--<img id="logo" src="/images/logo.png">--></a></h1>
+          <a href="/"><span class="tagline">AARON SANTIAGO</span></a>
         </div>
         <div class="posts">
           <ul class="posts-list">
+            <li class="tagline">WORKS</li>
             {% for post in site.posts %}
               <li class="post-link">
                 <a class="post-title" href="{{ post.url }}">
-                  <span class="post-date">{{ post.date | date_to_string }}</span>
                   {{ post.title }}
                 </a>
               </li>
@@ -41,8 +41,7 @@
         <div class="footer">
           <span id="footer-links">
             <a href="" class="footer-link">About</a> <span class="separator">&bull;</span>
-            <a href="" class="footer-link">Twitter</a> <span class="separator">&bull;</span>
-            <a href="" class="footer-link">GitHub</a>
+            <a href="" class="footer-link">CV</a>
           </span>
         </div>
       </div>
