@@ -15,13 +15,34 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+
 body {
   color: #4a4a4a;
-  background-color: #fafbfc;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 0.85em;
   overflow: hidden;
+  background: linear-gradient(257deg, #97c7bb, #c7cd5c, #a3afe5, #d6b37c, #8cb7de);
+  background-size: 1000% 1000%;
+  -webkit-animation: AnimationName 19s ease infinite;
+  -moz-animation: AnimationName 19s ease infinite;
+  animation: AnimationName 19s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 58%}
+    50%{background-position:100% 43%}
+    100%{background-position:0% 58%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 58%}
+    50%{background-position:100% 43%}
+    100%{background-position:0% 58%}
+}
+@keyframes AnimationName {
+    0%{background-position:0% 58%}
+    50%{background-position:100% 43%}
+    100%{background-position:0% 58%}
 }
 
 a {
@@ -89,7 +110,7 @@ a:hover {
 
 .tagline {
   width: 100%;
-  color: #787878;
+  color: rgba(64, 64, 64, .5);
   font-weight: 600;
   text-align: center;
   text-transform: lowercase;
@@ -98,7 +119,7 @@ a:hover {
 }
 
 .posts {
-  border-top: 1px solid #e7e7e7;
+  border-top: 1px solid #444;
   margin-top: 1em;
   padding-top: 1.5em;
   padding-bottom: 1.25em;
@@ -106,12 +127,17 @@ a:hover {
 
 .footer {
   font-size: 0.95em;
-  border-top: 1px solid #e7e7e7;
+  border-top: 1px solid #444;
   padding-top: 1.25em;
   padding-bottom: 1.5em;
   overflow: hidden;
   float: center;
   text-align: center;
+  color: #444;
+}
+
+.footer-link {
+  color: #444;
 }
 
 /*****************************************************************************/
@@ -126,7 +152,7 @@ a:hover {
   margin-bottom: 2em;
   text-transform: lowercase;
   font-weight: 600;
-  color: #787878;
+  color: rgba(64, 64, 64, .5);
 }
 
 #cover-photo-container,
@@ -228,7 +254,7 @@ a:hover {
   width: 14%;
   padding-left: 11em;
   padding-right: 2.125em;
-  border-right: 1px solid #e7e7e7;
+  border-right: 1px solid #444;
 }
 
 .content {
@@ -267,7 +293,7 @@ a:hover {
   display: none;
   padding: 15px 5px 0px 0px;
   margin-bottom: 10px;
-  border-bottom: 1px solid #e7e7e7;
+  border-bottom: 1px solid #444;
 }
 
 #sidebar-button:active,
@@ -284,7 +310,7 @@ a:hover {
 .colophon {
   margin-top: 1.5em;
   margin-bottom: 1.45em;
-  border-top: 1px dotted #e7e7e7;
+  border-top: 1px dotted #444;
 }
 
 .colophon p {
