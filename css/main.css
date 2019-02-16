@@ -102,10 +102,11 @@ a:hover {
   line-height: 1.25em;
 }
 
-.title {
+.title a{
   display: inline-block;
   text-align: center;
   line-height: 25px;
+  color: #444;
 }
 
 .tagline {
