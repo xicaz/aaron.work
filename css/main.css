@@ -107,6 +107,8 @@ a:hover {
   text-align: center;
   line-height: 25px;
   color: #444;
+  border-bottom: 1px solid #444;
+  padding-bottom: 15px;
 }
 
 .tagline {
@@ -120,8 +122,6 @@ a:hover {
 }
 
 .posts {
-  border-top: 1px solid #444;
-  margin-top: 1em;
   padding-top: 1.5em;
   padding-bottom: 1.25em;
 }
@@ -139,6 +139,20 @@ a:hover {
 
 .footer-link {
   color: #444;
+}
+
+#right-title {
+  display: inline-block;
+  text-align: right;
+  line-height: 25px;
+  color: #444;
+  text-align: center;
+  text-transform: lowercase;
+  font-size: 30px;
+  font-weight: 700;
+  position: absolute;
+  right: 0px;
+  top: 20px;
 }
 
 /*****************************************************************************/
@@ -253,7 +267,7 @@ a:hover {
 .sidebar {
   float: left;
   width: 14%;
-  padding-left: 11em;
+  padding-left: 2.125em;
   padding-right: 2.125em;
   border-right: 1px solid #444;
 }
@@ -293,12 +307,22 @@ a:hover {
   cursor: pointer;
   display: none;
   padding: 15px 5px 0px 0px;
-  margin-bottom: 10px;
+  margin: 10px;
+  margin-top: 0px;
   border-bottom: 1px solid #444;
+  position:relative;
+  padding-bottom: 10px;
 }
 
-#sidebar-button:active,
-#sidebar-button:hover {
+#sidebar-img {
+  font-size: 50px;
+  padding-bottom: 10px;
+  top:4px;
+  position:relative;
+}
+
+#sidebar-img:active,
+#sidebar-img:hover {
   opacity: 0.7;
 }
 
