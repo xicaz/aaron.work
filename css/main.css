@@ -148,7 +148,7 @@ a:hover {
   color: #444;
   text-align: center;
   text-transform: lowercase;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 700;
   position: absolute;
   right: 0px;
@@ -307,11 +307,11 @@ a:hover {
   cursor: pointer;
   display: none;
   padding: 15px 5px 0px 0px;
-  margin: 10px;
   margin-top: 0px;
   border-bottom: 1px solid #444;
   position:relative;
   padding-bottom: 10px;
+  min-width:250px;
 }
 
 #sidebar-img {
