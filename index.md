@@ -5,4 +5,4 @@ title: aaron.work
 date:   2013-12-09 12:00:00
 ---
 
-(under construction)
+welcome to my online portfolio
