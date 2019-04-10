@@ -19,9 +19,10 @@ var toRemove = [];
 var scene   = new THREE.Scene();
 
 var renderer    = new THREE.WebGLRenderer({
-  antialias   : true
+  antialias   : true,
+  alpha : true,
 });
-renderer.setClearColor(palette[0], 1)
+// renderer.setClearColor(palette[0], 1)
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -106,13 +107,17 @@ let createCube = function() {
   let yv = Math.sin(angle);
   let speed = .05 + .7 * Math.random();
 
-  mesh.position.z = Math.random() * 100;
-  updaters.push(function(i, dt){
+  mesh.position.z = Math.random() *Math.random() *Math.random() * 100;
+  updaters.push(function(i, dt, t){
+
+    // expand outwards
     mesh.position.x += dt * xv * speed;
     mesh.position.y += dt * yv * speed;
 
     mesh.rotation.x += dt * xv * speed * 8;
     mesh.rotation.y += dt * yv * speed * 8;
+
+    
   });
   return mesh;
 }
