@@ -7,7 +7,13 @@ categories: posts
 permalink: digital-fabric
 ---
 
-Digital fabric is a collection of images and video generated using video feedback. Displays and cameras vary between pieces. Technologies used: Twitch.tv, TouchDesigner, OBS
+Digital fabric is a collection of images and video generated using video feedback. Displays and cameras vary between pieces.
+
+A tool was created to assist in calibrating cameras to displays, using AR tracking markers to estimate the size and position of the display relative to the camera. AR can be used to acquire a general estimate that can be adjusted by hand, and allows for quick experimentation with video feedback.
+
+This tool is available at [jabdownsmash.com/autofeedback](https://jabdownsmash.com/autofeedback/)
+
+Technologies used: Twitch.tv, TouchDesigner, OBS, AR.js, WebGL, Three.js
 
 {% include image-gallery.html folder="/albums/cdf" %}
 
