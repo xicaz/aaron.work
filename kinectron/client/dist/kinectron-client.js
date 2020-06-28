@@ -265,7 +265,7 @@ var Kinectron = function Kinectron(arg1, arg2) {
   var depthheight;
   var rawdepthwidth;
   var rawdepthheight;
-  var whichKinect = "windows"; // Processing raw depth indicator
+  var whichKinect = null; // Processing raw depth indicator
 
   var busy = false; // Running multiframe indicator
 
@@ -279,7 +279,7 @@ var Kinectron = function Kinectron(arg1, arg2) {
   var connection = null;
   var peerNet = {
     host: "localhost",
-    port: 4001,
+    port: 9001,
     path: "/"
   }; // Connect to localhost by default
 
@@ -349,15 +349,13 @@ var Kinectron = function Kinectron(arg1, arg2) {
 
   this.makeConnection = function () {
     connection = peer.connect(peerId); // get a webrtc DataConnection
-    let framesReceived = 0;
+
     connection.on("open", function (data) {
       console.log("Open data connection with server");
     }); // Route incoming traffic from Kinectron
 
-    let busy = false;
     connection.on("data", function (dataReceived) {
       var data = dataReceived.data;
-      console.log("kinectron internal: frames received: " + framesReceived++);
 
       switch (dataReceived.event) {
         // Wait for ready from Kinectron to initialize
@@ -407,19 +405,12 @@ var Kinectron = function Kinectron(arg1, arg2) {
         // If image data draw image
 
         case "frame":
-          if (busy) {
-            console.log("kinectron internal: skipped!")
-            break;
-          }
-
           this.img.src = data.imagedata;
-          busy = true;
 
           this.img.onload = function () {
             this._chooseCallback(data.name);
 
             if (doRecord) this._drawImageToCanvas(data.name);
-            busy = false;
           }.bind(this);
 
           break;
