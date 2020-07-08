@@ -9,7 +9,12 @@
   padding: 0;
 }
 
-html, body {
+html {
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+body {
   height: 100%;
   width: 100%;
   -webkit-font-smoothing: antialiased;
@@ -26,11 +31,6 @@ html, body {
   -webkit-animation: AnimationName 19s ease infinite;
   -moz-animation: AnimationName 19s ease infinite;
   animation: AnimationName 19s ease infinite;
-}
-
-.grid-item-large {
-  width: 60% !important;
-  margin: 1.5% !important;
 }
 
 body {
@@ -143,14 +143,17 @@ a:hover {
 }
 
 .footer {
-  font-size: 0.95em;
   border-top: 1px solid #444;
   padding-top: 1.25em;
   padding-bottom: 1.5em;
   overflow: hidden;
-  float: center;
-  text-align: center;
   color: #444;
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+  padding: 1vh;
+  line-height: 4vh;
+  width:18vh;
 }
 
 .footer-link {
@@ -286,14 +289,14 @@ a:hover {
 
 .sidebar {
   float: left;
-  width: 20vh;/*
+  width: 18vh;/*
   padding-left: 2.125em;
   padding-right: 2.125em;*/
   border-right: 1px solid #444;
 }
 
 .content {
-  padding-left: 2.125em;
+  padding-left: 2em;
 }
 
 .header {
