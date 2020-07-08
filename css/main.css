@@ -30,9 +30,9 @@ body {
   background-size: 1000% 1000%;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  -webkit-animation: AnimationName 19s ease infinite;
-  -moz-animation: AnimationName 19s ease infinite;
-  animation: AnimationName 19s ease infinite;
+  -webkit-animation: AnimationName 16s ease infinite;
+  -moz-animation: AnimationName 16s ease infinite;
+  animation: AnimationName 16s ease infinite;
 }
 
 body {
@@ -46,7 +46,7 @@ body {
   -webkit-animation: AnimationName 19s ease infinite;
   -moz-animation: AnimationName 19s ease infinite;
   animation: AnimationName 19s ease infinite;
-  
+
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
