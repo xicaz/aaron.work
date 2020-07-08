@@ -15,6 +15,23 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+.grid-item {
+  width: 30%;
+  margin: 1.5%;
+}
+
+.box {
+  background: linear-gradient(257deg, #8cb7de, #d6b37c, #a3afe5, #c7cd5c, #97c7bb);
+  background-size: 1000% 1000%;
+  -webkit-animation: AnimationName 19s ease infinite;
+  -moz-animation: AnimationName 19s ease infinite;
+  animation: AnimationName 19s ease infinite;
+}
+
+.grid-item-large {
+  width: 60% !important;
+  margin: 1.5% !important;
+}
 
 body {
   color: #4a4a4a;
@@ -107,7 +124,6 @@ a:hover {
   text-align: center;
   line-height: 25px;
   color: #444;
-  border-bottom: 1px solid #444;
   padding-bottom: 15px;
 }
 
@@ -209,6 +225,10 @@ a:hover {
   border: none;
 }
 
+.title {
+  font-size: 1.5rem;
+}
+
 /* standard */
 .post pre {
   border: 1px solid #ddd;
@@ -266,9 +286,9 @@ a:hover {
 
 .sidebar {
   float: left;
-  width: 14%;
+  width: 20vh;/*
   padding-left: 2.125em;
-  padding-right: 2.125em;
+  padding-right: 2.125em;*/
   border-right: 1px solid #444;
 }
 

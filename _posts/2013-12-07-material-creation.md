@@ -6,7 +6,9 @@ date:   2013-12-09 12:00:00
 permalink: opulence
 ---
 
-Experiments with different mediums to create large canvases of busy textures. Technologies used: acrylic paint, watercolor, paper. TouchDesigner, Blender.
+Experiments with different mediums to create large canvases of busy textures.
+<!--more-->
+Technologies used: acrylic paint, watercolor, paper. TouchDesigner, Blender.
 
 {% include image-gallery.html folder="/albums/opulence" %}
 
