@@ -28,6 +28,8 @@ body {
 .box {
   background: linear-gradient(257deg, #8cb7de, #d6b37c, #a3afe5, #c7cd5c, #97c7bb);
   background-size: 1000% 1000%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   -webkit-animation: AnimationName 19s ease infinite;
   -moz-animation: AnimationName 19s ease infinite;
   animation: AnimationName 19s ease infinite;
@@ -44,6 +46,9 @@ body {
   -webkit-animation: AnimationName 19s ease infinite;
   -moz-animation: AnimationName 19s ease infinite;
   animation: AnimationName 19s ease infinite;
+  
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 @-webkit-keyframes AnimationName {
