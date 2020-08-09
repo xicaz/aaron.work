@@ -26,6 +26,9 @@ body {
 }
 
 .box {
+  background: #FFFFFF45;
+}
+.boxOLD{
   background: linear-gradient(157deg, #8cb7de, #d6b37c, #a3afe5, #c7cd5c, #97c7bb);
   background-size: 1000% 1000%;
   background-repeat: no-repeat;
