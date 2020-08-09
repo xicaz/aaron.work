@@ -24,9 +24,23 @@ body {
   width: 30%;
   margin: 1.5%;
 }
-
-.box {
+.content figure {
+    margin-left: 0;
+    margin-right: 0;
+}
+.cover-image {
+  object-fit: cover;
+  height: 100%;
+  width: unset;
+  border-radius: .3em .3em 0 0;
+  opacity: 85%;
+}
+.card-content .title {
+  margin-bottom: .3em !important;
+}
+.card {
   background: #FFFFFF45;
+  border-radius: .3em;
 }
 .boxOLD{
   background: linear-gradient(157deg, #8cb7de, #d6b37c, #a3afe5, #c7cd5c, #97c7bb);

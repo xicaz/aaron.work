@@ -5,6 +5,7 @@ cover: cover.jpg
 date:   2013-12-09 12:00:00
 categories: posts
 permalink: digital-fabric
+cardImage: albums/cdf/cdf1.png
 ---
 
 Digital fabric is a collection of images and video generated using video feedback.
