@@ -63,9 +63,37 @@ a:hover {
     background-color: #00000000 !important;
   }
 @media (max-width:1009px) {
+.grid-sizer,
+.grid-item {
+  width: 30%;
+  margin: 1.5%;
+}
+
+.med-grid-item {
+  width: 63%;
+  margin: 1.5%;
+}
+
+.big-grid-item {
+  width: 95%;
+  margin: 1.5%;
+}
+}
+@media (max-width:809px) {
+.grid-sizer,
 .grid-item {
   width: 45%;
-  margin: 2%;
+  margin: 1.5%;
+}
+
+.med-grid-item {
+  width: 95%;
+  margin: 1.5%;
+}
+
+.big-grid-item {
+  width: 95%;
+  margin: 1.5%;
 }
 }
 
@@ -74,9 +102,19 @@ a:hover {
  * iPhone width
  **/
 @media (max-width:640px) {
-
+.grid-sizer,
 .grid-item {
-  width: 90%;
+  width: 95%;
+  margin: 1.5%;
+}
+
+.med-grid-item {
+  width: 95%;
+  margin: 1.5%;
+}
+
+.big-grid-item {
+  width: 95%;
   margin: 1.5%;
 }
 #nametag {

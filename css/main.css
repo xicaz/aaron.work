@@ -20,9 +20,37 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* clearfix */
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.grid-sizer,
 .grid-item {
-  width: 30%;
+  width: 22%;
   margin: 1.5%;
+}
+
+.med-grid-item {
+  width: 47%;
+  margin: 1.5%;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+.big-grid-item {
+  width: 72%;
+  margin: 1.5%;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+.grid-item {
+  float: left;
+}
+.big-grid-item .title{
+  font-size: 1.7rem;
+  line-height: 1.7rem;
 }
 .content figure {
     margin-left: 0;
