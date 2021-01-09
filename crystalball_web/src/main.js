@@ -121,11 +121,12 @@ function gotDevices(deviceInfos) {
         option.innerHTML = deviceInfo.label || `camera ${videoSelect.length + 1}`;
         option.onclick = () => {
           options = options1;
+          document.getElementById("cambuttons").setAttribute("hidden", "true");
           button_callback(deviceInfo.deviceId,
             document.getElementById("v0name1").value,
             document.getElementById("v1name1").value);
         };
-        document.getElementById("options").appendChild(option);
+        document.getElementById("cambuttons").appendChild(option);
       }
 
       if (tab2) {
@@ -133,11 +134,12 @@ function gotDevices(deviceInfos) {
         option2.innerHTML = deviceInfo.label || `camera ${videoSelect.length + 1}`;
         option2.onclick = () => {
           options = options2;
+          document.getElementById("cambuttons").setAttribute("hidden", "true");
           button_callback(deviceInfo.deviceId,
             document.getElementById("v0name2").value,
             document.getElementById("v1name2").value);
         };
-        document.getElementById("options2").appendChild(option2);
+        document.getElementById("cambuttons").appendChild(option2);
       }
     } else {
       console.log('Some other kind of source/device: ', deviceInfo);
