@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>crystall ball webapp</title>
+		<script src="src/camvas.js"></script>
+		<script src="src/pico.js"></script>
+		<script src="src/lploc.js"></script>
+		<script src="src/pico_setup.js"></script>
+		<script type="text/javascript" src="src/dat-gui.js"></script>
+		<link rel="stylesheet" href="src/style.css">
+		<!--<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">-->
+	</head>
+	<body>
+		<div id="options">
+			<p>
+				<div>base video filename 1 <input id="v0name1" type="text" value="confetti-section-empty.mp4"></div>
+				<div>overlay video filename 1 <input id="v1name1" type="text" value="confetti-section.mp4"></div>
+			</p>
+			use set 1 videos with camera:
+		</div>
+		<hr>
+		<div id="options2">
+			<p>
+				<div>base video filename 2 <input id="v0name2" type="text" value="confetti-section-empty.mp4"></div>
+				<div>overlay video filename 2 <input id="v1name2" type="text" value="confetti-section.mp4"></div>
+			</p>
+			use set 2 videos with camera:
+		</div>
+		<hr>
+		<div id="info">
+			<details>
+		    <summary>click this to open configuration help</summary>
+				<p> all changes to configuration on this page are saved on your browser as soon as you change them. </p>
+				<p> there are two sets that can be configured independently, they each have different files and different entries in the configuration panel in the top right. they are labelled <i>1</i> and <i>2</i>. click the section in the configuration panel to expand it and see the options.</p>
+				<p> the videos are loaded from the videos/ folder inside the crystal ball server folder. </p>
+			</details>
+			<p> this webapp must be run in google chrome. </p>
+			<p> instructions for use: </p>
+			<h2> when in doubt, <b>refresh the page</b></h2>
+			<ol>
+				<li> open this page in two tabs </li>
+				<li> put each tab on its own monitor screen </li>
+				<li> on the first monitor, click "use set 1 videos with camera" and choose the corresponding camera </li>
+				<li> on the second monitor, click "use set 2 videos with camera" and choose the corresponding camera </li>
+				<ul> <li> if you do not see multiple camera buttons under the "use set videos with camera" section, make sure they are plugged in and refresh the page </li> </ul>
+				<li> on the configuration panel in the top right, click "fullscreen" on both tabs </li>
+			</ol>
+		<canvas width=640 height=480></canvas>
+		<div id="videos"></div>
+	</div>
+	<script src="src/main.js">
+	</script>
+	</body>
+</html>
