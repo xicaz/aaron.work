@@ -22,7 +22,7 @@ var options1 = {
   maxPlaybackSpeed: 1,
   minOverlayOpacity: 0,
   maxOverlayOpacity: 1,
-  set1Sensitivity: .3,
+  sensitivity: .3,
   // presenceDebounceDelay: 0.2
 };
 for (let id in options1) {
@@ -43,7 +43,7 @@ var options2 = {
   maxPlaybackSpeed: 1,
   minOverlayOpacity: 0,
   maxOverlayOpacity: 1,
-  set2Sensitivity: .3,
+  sensitivity: .3,
   // presenceDebounceDelay: 0.2
 };
 for (let id in options2) {
@@ -73,7 +73,7 @@ if (tab1) {
 // folder1.add(options1, "presenceDebounceDelay", 0, 10).onChange(writeOptions1);
 // var folder2 = null;
 if (tab2) {
-  folder2 = gui.addFolder('set 2 options');
+  // folder2 = gui.addFolder('set 2 options');
   // folder2.add(options2, "increasePresenceSpeed", 0, 10).onChange(writeOptions2);
   // folder2.add(options2, "decreasePresenceSpeed", 0, 10).onChange(writeOptions2);
 
@@ -92,8 +92,8 @@ let fullscreen = {
       }
   },
 };
-if (tab1) let sens1Gui = gui.add(options1, "set1Sensitivity", 0.01, .999).onChange(writeOptions1);
-if (tab2) let sens2Gui = gui.add(options2, "set2Sensitivity", 0.01, .999).onChange(writeOptions2);
+if (tab1) gui.add(options1, "sensitivity", 0.01, .999).onChange(writeOptions1);
+if (tab2) gui.add(options2, "sensitivity", 0.01, .999).onChange(writeOptions2);
 gui.add(fullscreen, "clickToFullscreen");
 
 function setupInput(id) {
@@ -158,11 +158,11 @@ function button_callback(deviceId, v0name, v1name) {
   let videoContainer = document.getElementById("videos");
 
   v0 = document.createElement("VIDEO");
-  v0.setAttribute("src", "/videos/" + v0name);
+  v0.setAttribute("src", "../videos/" + v0name);
   v0.setAttribute("id", "video0");
 
   v1 = document.createElement("VIDEO");
-  v1.setAttribute("src", "/videos/" + v1name);
+  v1.setAttribute("src", "../videos/" + v1name);
   v1.setAttribute("id", "video1");
 
   for (let v of[v0, v1]) {
@@ -180,8 +180,8 @@ let presenceDebounceCounter = 0;
 
 let previousTime = Date.now();
 function getSensitivity() {
-  if ("set1Sensitivity" in options) return options.set1Sensitivity;
-  if ("set2Sensitivity" in options) return options.set2Sensitivity;
+  if ("sensitivity" in options) return options.sensitivity;
+  if ("sensitivity" in options) return options.sensitivity;
   return 0;
 }
 
@@ -203,8 +203,8 @@ function updateVideo() {
     v1.currentTime = 0;
     console.log("large desync detected, restarting videos")
   }
-  if (typeof dets !== 'undefined') {
-    // if (dets.length > 0) {
+  if (typeof confDets !== 'undefined') {
+    // if (confDets.length > 0) {
     //   v1.style.opacity = 1;
 
     //   v0.playbackRate = 1;
@@ -222,7 +222,7 @@ function updateVideo() {
     let decreasePresenceSpeed = minSensitivityDecreasePresenceSpeed + 
       (maxSensitivityDecreasePresenceSpeed - minSensitivityDecreasePresenceSpeed) * getSensitivity();
 
-    if (dets.length > 0) {
+    if (confDets.length > 0) {
       presenceDebounceCounter = presenceDebounceDelay;
     } else if (presenceDebounceCounter > 0) {
       presenceDebounceCounter -= dt;

@@ -7,14 +7,14 @@
 		<!--<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">-->
 	</head>
 	<body>
-		<p> <center>this page should automatically load two crystal ball webapp tabs..
+		<p> <center>this page should automatically load the crystal ball webapp after 5 seconds.
 
-		If it does not load or there is an error, navigate to http://localhost:8000/tab1/ and http://localhost:8000/tab2/ using Google Chrome </center></p>
+		If it does not load or there is an error, navigate to http://localhost:8000/ using Google Chrome </center></p>
 	<script>
-			window.open("http://localhost:8000/tab2/",'_blank');
 		setTimeout(() => {
+			window.open("http://localhost:8000/tab2/",'_blank');
 			location.href = "http://localhost:8000/tab1/";
-		}, 500);
+		}, 5000);
 	</script>
 	</body>
 </html>

@@ -12,7 +12,7 @@ function picoSetup (deviceId) {
     {
         return -1.0;
     };
-    var cascadeurl = '/src/facefinder';
+    var cascadeurl = '../src/facefinder';
     fetch(cascadeurl).then(function (response)
     {
         response.arrayBuffer().then(function (buffer)
@@ -31,7 +31,7 @@ function picoSetup (deviceId) {
     {
         return [-1.0, -1.0];
     };
-    var puplocurl = '/src/puploc.bin'
+    var puplocurl = '../src/puploc.bin'
         fetch(puplocurl).then(function (response)
         {
             response.arrayBuffer().then(function (buffer)
@@ -90,6 +90,7 @@ function picoSetup (deviceId) {
         dets = pico.run_cascade(image, facefinder_classify_region, params);
         dets = update_memory(dets);
         dets = pico.cluster_detections(dets, 0.2); // set IoU threshold to 0.2
+        confDets = [];
         // draw detections
         for (i = 0; i < dets.length; ++i)
             // check the detection score
@@ -97,6 +98,7 @@ function picoSetup (deviceId) {
             // (the constant 50.0 is empirical: other cascades might require a different one)
             if (dets[i][3] > 50.0)
             {
+                confDets.push(dets[i]);
                 var r,
                 c,
                 s;

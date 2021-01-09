@@ -24,6 +24,11 @@ details {
 	width: 50%;
 }
 
+#options {
+	float:right;
+	margin-right: 25vw;
+}
+
 #video0 {
 	z-index: 10;
 }
@@ -40,6 +45,7 @@ details {
 
 #videos {
 	pointer-events: none;
+
 }
 
 .cb_video {
