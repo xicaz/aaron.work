@@ -29,6 +29,11 @@ details {
 	margin-right: 25vw;
 }
 
+#options2 {
+	float:right;
+	margin-right: 25vw;
+}
+
 #video0 {
 	z-index: 10;
 }
