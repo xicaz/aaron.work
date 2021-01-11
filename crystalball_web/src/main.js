@@ -17,7 +17,7 @@ let maxSensitivityDebounceDelay = .1;
 var options = {
   // decreasePresenceSpeed: 0.8,
   // increasePresenceSpeed: 2.3,
-  minPlaybackSpeed: 0.325,
+  minPlaybackSpeed: 1,
   maxPlaybackSpeed: 1,
   minOverlayOpacity: 0,
   maxOverlayOpacity: 1,
