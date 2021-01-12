@@ -1,4 +1,6 @@
 
+let initialized = false;
+
 navigator.mediaDevices.getUserMedia({
   video: true
 });
@@ -131,9 +133,21 @@ function handleError(error) {
   console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
 
-navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+if (skipEnumerate) {
+  const option = document.createElement('button');
+      option.innerHTML = "begin demo";
+      option.onclick = () => {
+        document.getElementById("cambuttons").setAttribute("hidden", "true");
+        button_callback(null,
+          vname1,
+          vname2);
+      };
+      document.getElementById("cambuttons").appendChild(option);
+}
+else {
+  navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+}
 
-let initialized = false;
 function button_callback(deviceId, v0name, v1name) {
   picoSetup(deviceId);
 
@@ -178,7 +192,7 @@ function updateVideo() {
   previousTime = currentTime;
 
   let videoDelta = Math.abs(v1.currentTime - v0.currentTime);
-  if (videoDelta > 1.5 && videoDelta < v0.duration/2) {
+  if (videoDelta > 5.5 && videoDelta < v0.duration/2) {
     v0.currentTime = 0;
     v1.currentTime = 0;
     console.log("large desync detected, restarting videos")
