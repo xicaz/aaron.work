@@ -123,6 +123,7 @@ function gotDevices(deviceInfos) {
           vname2);
       };
       document.getElementById("cambuttons").appendChild(option);
+      console.log(deviceInfo.label + " " + deviceInfo.deviceId);
     } else {
       console.log('Some other kind of source/device: ', deviceInfo);
     }
