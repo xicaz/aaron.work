@@ -1,0 +1,63 @@
+body, html {
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+input {
+	width: 75%;
+	height: 2em;
+}
+
+canvas {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+}
+
+details {
+	background: lightgrey;
+}
+
+#info {
+	width: 50%;
+}
+
+#options {
+	float:right;
+	margin-right: 25vw;
+}
+
+#options2 {
+	float:right;
+	margin-right: 25vw;
+}
+
+#video0 {
+	z-index: 10;
+}
+#video1 {
+	z-index: 100;
+	opacity: .1;
+}
+
+#fullscreen {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+#videos {
+	pointer-events: none;
+
+}
+
+.cb_video {
+	position:absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}

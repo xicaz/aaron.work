@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>crystall ball webapp</title>
+		<script src="../src/camvas.js"></script>
+		<script src="../src/pico.js"></script>
+		<script src="../src/lploc.js"></script>
+		<script src="../src/pico_setup.js"></script>
+		<script type="text/javascript" src="../src/dat-gui.js"></script>
+		<link rel="stylesheet" href="../src/style.css">
+		<!--<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">-->
+	</head>
+	<body>
+		<div id="options">
+			<p>
+			<p>click to choose camera and start video playback:</p>
+			<div id="cambuttons"></div>
+		</div>
+		<div id="info">
+			<p> this webapp must be run in google chrome. </p>
+			<p> instructions for use: </p>
+			<h2> when in doubt, <b>refresh the page</b></h2>
+			<ol>
+				<li> ensure the proper tabs for this computer are open, it should be two of the following links: <a href="http://aaron.work/crystalball_web/tab1/">tab1</a>, <a href="http://aaron.work/crystalball_web/tab2/">tab 2</a>, <a href="http://aaron.work/crystalball_web/tab3/">tab 3</a>, <a href="http://aaron.work/crystalball_web/tab4/">tab 4</a> </li>
+				<li> put each tab on its own monitor screen </li>
+				<li> on the first monitor, click the button related to the corresponding camera</li>
+				<li> on the second monitor, click the button related to the corresponding camera </li>
+				<ul> <li> if you do not see multiple camera buttons under the "use set videos with camera" section, make sure they are plugged in and refresh the page </li> </ul>
+				<li> on the configuration panel in the top right, click "fullscreen" on both tabs </li>
+			</ol>
+		<canvas width=640 height=480></canvas>
+		<div id="videos"></div>
+	</div>
+	<script>tab1 = true; tab2 = false; vname1 = "confetti-empty.mp4"; vname2 = "confetti.mp4"; skipEnumerate = false;</script>
+	<script src="../src/main.js">
+	</script>
+	</body>
+</html>
