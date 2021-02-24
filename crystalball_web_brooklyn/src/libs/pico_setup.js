@@ -12,7 +12,7 @@ function picoSetup (deviceId) {
     {
         return -1.0;
     };
-    var cascadeurl = '../src/facefinder';
+    var cascadeurl = '../src/libs/facefinder';
     fetch(cascadeurl).then(function (response)
     {
         response.arrayBuffer().then(function (buffer)
@@ -31,7 +31,7 @@ function picoSetup (deviceId) {
     {
         return [-1.0, -1.0];
     };
-    var puplocurl = '../src/puploc.bin'
+    var puplocurl = '../src/libs/puploc.bin'
         fetch(puplocurl).then(function (response)
         {
             response.arrayBuffer().then(function (buffer)

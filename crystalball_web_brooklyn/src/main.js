@@ -1,14 +1,12 @@
 
+// ************ constants and globals *****************************************
 let initialized = false;
-
-navigator.mediaDevices.getUserMedia({
-  video: true
-});
 
 var gui = new dat.GUI({
     name: 'options'
   });
 
+// some handcrafted constants for the "face sensitivity" slider
 let minSensitivityDecreasePresenceSpeed = 3;
 let maxSensitivityDecreasePresenceSpeed = 5;
 let minSensitivityIncreasePresenceSpeed = 1;
@@ -16,71 +14,33 @@ let maxSensitivityIncreasePresenceSpeed = 5;
 let minSensitivityDebounceDelay = 1;
 let maxSensitivityDebounceDelay = .1;
 
+// motion variables
+let motionAmountBuffer = 0;
+let motionAmount = 0;
+
+// options that can be changed via the UI
 var options = {
-  // decreasePresenceSpeed: 0.8,
-  // increasePresenceSpeed: 2.3,
   minPlaybackSpeed: 1,
   faceSensitivity: .3,
   motionSensitivity: .3,
   motionPlaybackSpeed: 2.5,
-  // presenceDebounceDelay: 0.2
 };
-// for (let id in options1) {
-//   if (localStorage.getItem(id + "1")) {
-//     options1[id] = parseFloat(localStorage.getItem(id + "1"));
-//   }
-// }
 
-// function writeOptions1() {
-//   for (let id in options1) {
-//     localStorage.setItem(id + "1", options1[id]);
-//   }
-// }
-// var options2 = {
-//   // decreasePresenceSpeed: 0.8,
-//   // increasePresenceSpeed: 2.3,
-//   minPlaybackSpeed: 0.325,
-//   maxPlaybackSpeed: 1,
-//   minOverlayOpacity: 0,
-//   maxOverlayOpacity: 1,
-//   sensitivity: .3,
-//   // presenceDebounceDelay: 0.2
-// };
-// for (let id in options2) {
-//   if (localStorage.getItem(id + "2")) {
-//     options2[id] = parseFloat(localStorage.getItem(id + "2"));
-//   }
-// }
+// ************ page load setup *****************************************
+navigator.mediaDevices.getUserMedia({
+  video: true
+});
 
-// function writeOptions2() {
-//   for (let id in options2) {
-//     localStorage.setItem(id + "2", options2[id]);
-//   }
-// }
-// var folder1 = null;
-if (tab1) {
-  // folder1 = gui.addFolder('set 1 options');
-  // folder1.add(options1, "increasePresenceSpeed", 0, 10).onChange(writeOptions1);
-  // folder1.add(options1, "decreasePresenceSpeed", 0, 10).onChange(writeOptions1);
-
-  // gui.add(options1, "minPlaybackSpeed", 0, 3).onChange(writeOptions1);
-  // gui.add(options1, "maxPlaybackSpeed", 0, 3).onChange(writeOptions1);
-}
-
-
-// folder1.add(options1, "presenceDebounceDelay", 0, 10).onChange(writeOptions1);
-// var folder2 = null;
-if (tab2) {
-  // folder2 = gui.addFolder('set 2 options');
-  // folder2.add(options2, "increasePresenceSpeed", 0, 10).onChange(writeOptions2);
-  // folder2.add(options2, "decreasePresenceSpeed", 0, 10).onChange(writeOptions2);
-
-  // gui.add(options2, "minPlaybackSpeed", 0, 3).onChange(writeOptions2);
-  // gui.add(options2, "maxPlaybackSpeed", 0, 3).onChange(writeOptions2);
-}
-
-// folder2.add(options2, "presenceDebounceDelay", 0, 10).onChange(writeOptions2);
-
+// dat.gui setup
+gui.add(options, "faceSensitivity", 0.01, .999).onChange(() => {
+    localStorage.setItem("faceSensitivity", options["faceSensitivity"]);
+  });
+gui.add(options, "motionSensitivity", 0.01, .999).onChange(() => {
+    localStorage.setItem("motionSensitivity", options["motionSensitivity"]);
+  });
+gui.add(options, "motionPlaybackSpeed", 1.001, 2.999).onChange(() => {
+    localStorage.setItem("motionPlaybackSpeed", options["motionPlaybackSpeed"]);
+  });
 let fullscreen = {
   clickToFullscreen: () => {
     if (initialized) {
@@ -88,35 +48,11 @@ let fullscreen = {
       }
   },
 };
-if (tab1) {
-  gui.add(options, "faceSensitivity", 0.01, .999).onChange(() => {
-      localStorage.setItem("faceSensitivity", options["faceSensitivity"]);
-    });
-  gui.add(options, "motionSensitivity", 0.01, .999).onChange(() => {
-      localStorage.setItem("motionSensitivity", options["motionSensitivity"]);
-    });
-  gui.add(options, "motionPlaybackSpeed", 1.001, 2.999).onChange(() => {
-      localStorage.setItem("motionPlaybackSpeed", options["motionPlaybackSpeed"]);
-    });
-}
 gui.add(fullscreen, "clickToFullscreen");
 
-// function setupInput(id) {
-//   if (localStorage.getItem(id)) {
-//     document.getElementById(id).value = localStorage.getItem(id);
-//   }
-//   document.getElementById(id).addEventListener('change', (event) => {
-//     localStorage.setItem(id, event.target.value);
-//   });
-// }
+// getUserMedia setup
 
-// let inputs = [];
-// if (tab1) inputs = ['v0name1', 'v1name1'];
-// if (tab2) inputs = ['v0name2', 'v1name2'];
-// for (let v of inputs) {
-//   setupInput(v);
-// }
-
+// getUserMedia success callback
 function gotDevices(deviceInfos) {
   for (let i = 0; i !== deviceInfos.length; ++i) {
     const deviceInfo = deviceInfos[i];
@@ -137,10 +73,12 @@ function gotDevices(deviceInfos) {
   }
 }
 
+// getUserMedia error callback
 function handleError(error) {
   console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
 }
 
+// in "demo" we use regular getusermedia
 if (skipEnumerate) {
   const option = document.createElement('button');
       option.innerHTML = "begin demo";
@@ -152,58 +90,53 @@ if (skipEnumerate) {
       };
       document.getElementById("cambuttons").appendChild(option);
 }
+// otherwise we need to be able to choose which webcam to use
 else {
   navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
 }
 
-let scoreBuffer = 0;
-let scoreBuffer2 = 0;
-let score = 0;
-let score2 = 0;
+
+// ************ camera chosen setup *****************************************
+
+// helper function to calculate magnitude of coordinates
 let mag = (x, y) => {return Math.sqrt((x - y) * (x - y));};
 function button_callback(deviceId, v0name, v1name) {
+
+  // run face detection setup
   picoSetup(deviceId);
 
+  // run optical flow setup
   let videoContainer = document.getElementById("videos");
   webCamFlow = new oflow.VideoFlow(mycamvas.video, 8);
 
   webCamFlow.onCalculated( function (direction) {
-      // render zones
-      let totX = 0;
-      let totY = 0;
+    // calculate motion amount by averaging all of the motion zone magnitudes
       for(var i = 0; i < direction.zones.length; ++i) {
           var zone = direction.zones[i];
-          // score += mag(zone.u, zone.v);
-          totX += zone.u;
-          totY += zone.v;
-          score2 += mag(zone.u, zone.v);
-          // score = Math.max(score, mag(zone.u, zone.v));
-          // score += mag(zone.u, zone.v) > .006 ? 1 : 0;
+          motionAmount += mag(zone.u, zone.v);
       }
-      score = mag(totX, totY);
-      // score = score / 25;
-      score2 = score2 / direction.zones.length;
+      motionAmount = motionAmount / direction.zones.length;
       
   });
-  let updateScore = () => {
-      let scoreEl = document.getElementById("score");
-      if (scoreEl) scoreEl.innerHTML = scoreBuffer;
-      let score2El = document.getElementById("score2");
-      if (score2El) score2El.innerHTML = scoreBuffer2;
-      scoreBuffer = (score * .5 + scoreBuffer * .5);
-      scoreBuffer2 = (score2 * .5 + scoreBuffer2 * .5);
-      setTimeout(updateScore, 100);
-  };
-  setTimeout(updateScore, 100);
 
+  // only update at 10hz to have consistent performance with different framerates
+  let updateMotionAmount = () => {
+      let motionAmountEl = document.getElementById("motionAmount");
+      if (motionAmountEl) motionAmountEl.innerHTML = motionAmountBuffer;
+      motionAmountBuffer = (motionAmount * .5 + motionAmountBuffer * .5);
+      setTimeout(updateMotionAmount, 100);
+  };
+  setTimeout(updateMotionAmount, 100);
+
+  // start optical flow calculations and video playback
   webCamFlow.startCapture();
 
   v0 = document.createElement("VIDEO");
-  v0.setAttribute("src", "../videos/" + v0name);
+  v0.setAttribute("src", "../videos/" + v0name); // defined in individual index.htmls
   v0.setAttribute("id", "video0");
 
   v1 = document.createElement("VIDEO");
-  v1.setAttribute("src", "../videos/" + v1name);
+  v1.setAttribute("src", "../videos/" + v1name); // defined in individual index.htmls
   v1.setAttribute("id", "video1");
 
   for (let v of[v0, v1]) {
@@ -213,18 +146,25 @@ function button_callback(deviceId, v0name, v1name) {
     videoContainer.appendChild(v);
   }
 
-  requestAnimationFrame(updateVideo);
+  requestAnimationFrame(updateVideo); // updateVideo defined later
 }
 
+// ************ update *****************************************
+
+// "presence" as in the presence of a face
 let currentPresence = 0;
+// debounce counter used to smooth out flickering in face detection
 let presenceDebounceCounter = 0;
 
 let previousTime = Date.now();
-function getFaceSensitivity() {
-  return options.faceSensitivity;
-}
 
 function updateVideo() {
+
+  let currentTime = Date.now();
+  let dt = (currentTime - previousTime) / 1000;
+  previousTime = currentTime;
+
+  // force sync the videos. if they are paused, play them
   if (v0.paused) {
     v0.play();
   }
@@ -232,57 +172,47 @@ function updateVideo() {
     v1.play();
   }
 
-  let currentTime = Date.now();
-  let dt = (currentTime - previousTime) / 1000;
-  previousTime = currentTime;
-
+  // if they have drifted dramatically apart, restart them
+  // a little bit of drift is *guaranteed*, so don't turn the number down here too low
   let videoDelta = Math.abs(v1.currentTime - v0.currentTime);
   if (videoDelta > 5.5 && videoDelta < v0.duration/2) {
     v0.currentTime = 0;
     v1.currentTime = 0;
     console.log("large desync detected, restarting videos")
   }
-  if (typeof confDets !== 'undefined') {
-    // if (confDets.length > 0) {
-    //   v1.style.opacity = 1;
 
-    //   v0.playbackRate = 1;
-    //   v1.playbackRate = 1;
-    // } else {
-    //   v1.style.opacity = 0;
-    //   v0.playbackRate = .4;
-    //   v1.playbackRate = .4;
-    // }
+  // caculate these based off of the "faceSensitivity" slider. see the constants above
+  let presenceDebounceDelay = minSensitivityDebounceDelay + 
+    (maxSensitivityDebounceDelay - minSensitivityDebounceDelay) * options.faceSensitivity;
+  let increasePresenceSpeed = minSensitivityIncreasePresenceSpeed + 
+    (maxSensitivityIncreasePresenceSpeed - minSensitivityIncreasePresenceSpeed) * options.faceSensitivity;
+  let decreasePresenceSpeed = minSensitivityDecreasePresenceSpeed + 
+    (maxSensitivityDecreasePresenceSpeed - minSensitivityDecreasePresenceSpeed) * options.faceSensitivity;
 
-    let presenceDebounceDelay = minSensitivityDebounceDelay + 
-      (maxSensitivityDebounceDelay - minSensitivityDebounceDelay) * getFaceSensitivity();
-    let increasePresenceSpeed = minSensitivityIncreasePresenceSpeed + 
-      (maxSensitivityIncreasePresenceSpeed - minSensitivityIncreasePresenceSpeed) * getFaceSensitivity();
-    let decreasePresenceSpeed = minSensitivityDecreasePresenceSpeed + 
-      (maxSensitivityDecreasePresenceSpeed - minSensitivityDecreasePresenceSpeed) * getFaceSensitivity();
-
-    if (confDets.length > 0) {
-      presenceDebounceCounter = presenceDebounceDelay;
-    } else if (presenceDebounceCounter > 0) {
-      presenceDebounceCounter -= dt;
-    }
-
-    if (presenceDebounceCounter > 0) {
-      currentPresence += dt * increasePresenceSpeed;
-    } else {
-      currentPresence -= dt * decreasePresenceSpeed;
-    }
-    currentPresence = Math.min(currentPresence, 1);
-    currentPresence = Math.max(currentPresence, 0);
-    let speed = 
-    // let speed = scoreBuffer2 < .1 ? options.minPlaybackSpeed :
-     // (scoreBuffer > 100 ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(scoreBuffer/100, 1))) : options.minPlaybackSpeed);
-     (scoreBuffer2 > (1 - options.motionSensitivity) ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(scoreBuffer2, 1))) : 1);
-    v0.playbackRate = v1.playbackRate = speed;
-    v0.playbackRate = v1.playbackRate = speed;
-    v1.style.opacity = currentPresence;
+  // confDets is defined by pico--represents the number of faces detected
+  if (!(typeof confDets === "undefined") && confDets.length > 0) {
+    presenceDebounceCounter = presenceDebounceDelay;
+  } else if (presenceDebounceCounter > 0) {
+    presenceDebounceCounter -= dt;
   }
 
+  // if the debounce is still ticking down, pretend we still see a face
+  if (presenceDebounceCounter > 0) {
+    currentPresence += dt * increasePresenceSpeed;
+  // once it's 0 we can safely say there is no face
+  } else {
+    currentPresence -= dt * decreasePresenceSpeed;
+  }
+
+  // clamp this value then use it to calculate the overlay opacity
+  currentPresence = Math.min(currentPresence, 1);
+  currentPresence = Math.max(currentPresence, 0);
+  v1.style.opacity = currentPresence;
+
+  // use the motion amount to calculate the playback speed
+  let speed = (motionAmountBuffer > (1 - options.motionSensitivity) ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(motionAmountBuffer, 1))) : 1);
+  v0.playbackRate = v1.playbackRate = speed;
+  v0.playbackRate = v1.playbackRate = speed;
 
   requestAnimationFrame(updateVideo);
 }
