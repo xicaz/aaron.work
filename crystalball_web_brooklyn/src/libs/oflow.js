@@ -131,9 +131,9 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
                 for (localX = -step; localX <= step; localX++) {
                     var address = (globalY + localY) * width + globalX + localX;
 
-                    var gradX = (newImage[(address - 1) * 4]) - (newImage[(address + 1) * 4]);
-                    var gradY = (newImage[(address - width) * 4]) - (newImage[(address + width) * 4]);
-                    var gradT = (oldImage[address * 4]) - (newImage[address * 4]);
+                    var gradX = (Math.floor(newImage[(address - 1) * 4]/16)) - (Math.floor(newImage[(address + 1) * 4]/16));
+                    var gradY = (Math.floor(newImage[(address - width) * 4]/16)) - (Math.floor(newImage[(address + width) * 4]/16));
+                    var gradT = (Math.floor(oldImage[address * 4]/16)) - (Math.floor(newImage[address * 4]/16));
 
                     A2 += gradX * gradX;
                     A1B2 += gradX * gradY;

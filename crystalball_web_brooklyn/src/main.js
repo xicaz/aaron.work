@@ -15,8 +15,11 @@ let minSensitivityDebounceDelay = 1;
 let maxSensitivityDebounceDelay = .1;
 
 // motion variables
-let motionAmountBuffer = 0;
-let motionAmount = 0;
+let oflowMotionAmountBuffer = 0;
+let oflowMotionAmount = 0;
+
+let playbackSpeedBuffer = 1;
+let playbackSpeedDecreaseSpeed = 1;
 
 // options that can be changed via the UI
 var options = {
@@ -113,20 +116,20 @@ function button_callback(deviceId, v0name, v1name) {
     // calculate motion amount by averaging all of the motion zone magnitudes
       for(var i = 0; i < direction.zones.length; ++i) {
           var zone = direction.zones[i];
-          motionAmount += mag(zone.u, zone.v);
+          oflowMotionAmount += mag(zone.u, zone.v);
       }
-      motionAmount = motionAmount / direction.zones.length;
+      oflowMotionAmount = oflowMotionAmount / direction.zones.length;
       
   });
 
   // only update at 10hz to have consistent performance with different framerates
-  let updateMotionAmount = () => {
-      let motionAmountEl = document.getElementById("motionAmount");
-      if (motionAmountEl) motionAmountEl.innerHTML = motionAmountBuffer;
-      motionAmountBuffer = (motionAmount * .5 + motionAmountBuffer * .5);
-      setTimeout(updateMotionAmount, 100);
+  let updateOflowMotionAmount = () => {
+      let oflowMotionAmountEl = document.getElementById("oflowMotionAmount");
+      if (oflowMotionAmountEl) oflowMotionAmountEl.innerHTML = oflowMotionAmountBuffer;
+      oflowMotionAmountBuffer = (oflowMotionAmount * .5 + oflowMotionAmountBuffer * .5);
+      setTimeout(updateOflowMotionAmount, 100);
   };
-  setTimeout(updateMotionAmount, 100);
+  setTimeout(updateOflowMotionAmount, 100);
 
   // start optical flow calculations and video playback
   webCamFlow.startCapture();
@@ -210,9 +213,16 @@ function updateVideo() {
   v1.style.opacity = currentPresence;
 
   // use the motion amount to calculate the playback speed
-  let speed = (motionAmountBuffer > (1 - options.motionSensitivity) ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(motionAmountBuffer, 1))) : 1);
-  v0.playbackRate = v1.playbackRate = speed;
-  v0.playbackRate = v1.playbackRate = speed;
+  let speed = (oflowMotionAmountBuffer > (1.4 - options.motionSensitivity) ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(oflowMotionAmountBuffer, 1))) : 1);
+  if (speed > playbackSpeedBuffer) {
+    playbackSpeedBuffer = speed;
+  }
+  else {
+    playbackSpeedBuffer -= dt * playbackSpeedDecreaseSpeed;
+    playbackSpeedBuffer = Math.max(playbackSpeedBuffer, 1);
+  }
+  v0.playbackRate = v1.playbackRate = playbackSpeedBuffer;
+  v0.playbackRate = v1.playbackRate = playbackSpeedBuffer;
 
   requestAnimationFrame(updateVideo);
 }
