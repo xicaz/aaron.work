@@ -23,10 +23,10 @@ let playbackSpeedDecreaseSpeed = 1;
 
 // options that can be changed via the UI
 var options = {
-  minPlaybackSpeed: 1,
   faceSensitivity: .3,
   motionSensitivity: .3,
-  motionPlaybackSpeed: 2.5,
+  minSpeed: .7,
+  maxSpeed: 1.2,
 };
 
 // ************ page load setup *****************************************
@@ -41,8 +41,11 @@ gui.add(options, "faceSensitivity", 0.01, .999).onChange(() => {
 gui.add(options, "motionSensitivity", 0.01, .999).onChange(() => {
     localStorage.setItem("motionSensitivity", options["motionSensitivity"]);
   });
-gui.add(options, "motionPlaybackSpeed", 1.001, 2.999).onChange(() => {
-    localStorage.setItem("motionPlaybackSpeed", options["motionPlaybackSpeed"]);
+gui.add(options, "minSpeed", 0.01, .999).onChange(() => {
+    localStorage.setItem("minSpeed", options["minSpeed"]);
+  });
+gui.add(options, "maxSpeed", 1.001, 2.999).onChange(() => {
+    localStorage.setItem("maxSpeed", options["maxSpeed"]);
   });
 let fullscreen = {
   clickToFullscreen: () => {
@@ -200,7 +203,8 @@ function updateVideo() {
   }
 
   // if the debounce is still ticking down, pretend we still see a face
-  if (presenceDebounceCounter > 0) {
+  // we also allow movement to trigger the item
+  if (presenceDebounceCounter > 0 || playbackSpeedBuffer > 1) {
     currentPresence += dt * increasePresenceSpeed;
   // once it's 0 we can safely say there is no face
   } else {
@@ -213,13 +217,13 @@ function updateVideo() {
   v1.style.opacity = currentPresence;
 
   // use the motion amount to calculate the playback speed
-  let speed = (oflowMotionAmountBuffer > (1.4 - options.motionSensitivity) ? (options.motionPlaybackSpeed * Math.min(1.3, Math.max(oflowMotionAmountBuffer, 1))) : 1);
+  let speed = (oflowMotionAmountBuffer > (1.4 - options.motionSensitivity) ? (options.maxSpeed * Math.min(1.3, Math.max(oflowMotionAmountBuffer, 1))) : options.minSpeed);
   if (speed > playbackSpeedBuffer) {
     playbackSpeedBuffer = speed;
   }
   else {
     playbackSpeedBuffer -= dt * playbackSpeedDecreaseSpeed;
-    playbackSpeedBuffer = Math.max(playbackSpeedBuffer, 1);
+    playbackSpeedBuffer = Math.max(playbackSpeedBuffer, options.minSpeed);
   }
   v0.playbackRate = v1.playbackRate = playbackSpeedBuffer;
   v0.playbackRate = v1.playbackRate = playbackSpeedBuffer;
