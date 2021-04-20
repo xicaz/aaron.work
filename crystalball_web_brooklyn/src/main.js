@@ -181,6 +181,9 @@ function button_callback(deviceId, v0name, v1name) {
     v.setAttribute("loop", "loop");
     videoContainer.appendChild(v);
   }
+  if (newTitle !== null) {
+    document.title = newTitle;
+  }
 
   requestAnimationFrame(updateVideo); // updateVideo defined later
 }
