@@ -1,3 +1,14 @@
+// segment local storage per tab by using these
+// instead of regular localstorage calls
+
+function lsGet(name) {
+  return localStorage.getItem(newTitle + name);
+}
+
+function lsSet(name, value) {
+  localStorage.setItem(newTitle + name, value);
+}
+
 
 // ************ constants and globals *****************************************
 let initialized = false;
@@ -19,10 +30,10 @@ let oflowMotionAmountBuffer = 0;
 let oflowMotionAmount = 0;
 
 let playbackSpeedBuffer = 1;
-let playbackSpeedDecreaseSpeed = 1;
 
 // options that can be changed via the UI
 var options = {
+  playbackSpeedDecreaseSpeed: 1,
   eyeRecognition: false,
   faceSensitivity: .3,
   motionSensitivity: .3,
@@ -32,11 +43,11 @@ var options = {
 };
 
 for (let option in options) {
-  if (localStorage.getItem(option) !== null) {
+  if (lsGet(option) !== null) {
     if (option == "autostart" || option == "eyeRecognition") {
-      options[option] = localStorage.getItem(option) === "true";
+      options[option] = lsGet(option) === "true";
     } else {
-      options[option] = parseFloat(localStorage.getItem(option));
+      options[option] = parseFloat(lsGet(option));
     }
   }
 }
@@ -48,22 +59,25 @@ navigator.mediaDevices.getUserMedia({
 
 // dat.gui setup
 gui.add(options, "eyeRecognition").onChange(() => {
-    localStorage.setItem("eyeRecognition", options["eyeRecognition"]);
+    lsSet("eyeRecognition", options["eyeRecognition"]);
   });
 gui.add(options, "faceSensitivity", 0.01, .999).onChange(() => {
-    localStorage.setItem("faceSensitivity", options["faceSensitivity"]);
+    lsSet("faceSensitivity", options["faceSensitivity"]);
   });
 gui.add(options, "motionSensitivity", 0.01, .999).onChange(() => {
-    localStorage.setItem("motionSensitivity", options["motionSensitivity"]);
+    lsSet("motionSensitivity", options["motionSensitivity"]);
+  });
+gui.add(options, "playbackSpeedDecreaseSpeed", 0.01, .999).onChange(() => {
+    lsSet("playbackSpeedDecreaseSpeed", options["playbackSpeedDecreaseSpeed"]);
   });
 gui.add(options, "minSpeed", 0.01, .999).onChange(() => {
-    localStorage.setItem("minSpeed", options["minSpeed"]);
+    lsSet("minSpeed", options["minSpeed"]);
   });
 gui.add(options, "maxSpeed", 1.001, 2.999).onChange(() => {
-    localStorage.setItem("maxSpeed", options["maxSpeed"]);
+    lsSet("maxSpeed", options["maxSpeed"]);
   });
 gui.add(options, "autostart").onChange(() => {
-    localStorage.setItem("autostart", options["autostart"]);
+    lsSet("autostart", options["autostart"]);
   });
 let fullscreen = {
   clickToFullscreen: () => {
@@ -90,14 +104,14 @@ function gotDevices(deviceInfos) {
       const option = document.createElement('button');
       option.innerHTML = deviceInfo.label || `camera ${videoSelect.length + 1}`;
       option.onclick = () => {
-        localStorage.setItem("videoInput", option.innerHTML);
+        lsSet("videoInput", option.innerHTML);
 
         document.getElementById("cambuttons").setAttribute("hidden", "true");
         button_callback(deviceInfo.deviceId,
           vname1,
           vname2);
       };
-      if ((options.autostart === true || options.autostart === "true") && localStorage.getItem("videoInput") == option.innerHTML) {
+      if ((options.autostart === true || options.autostart === "true") && lsGet("videoInput") == option.innerHTML) {
         option.onclick();
         fullscreen.clickToFullscreen();
       }
@@ -255,7 +269,7 @@ function updateVideo() {
     playbackSpeedBuffer = speed;
   }
   else {
-    playbackSpeedBuffer -= dt * playbackSpeedDecreaseSpeed;
+    playbackSpeedBuffer -= dt * options.playbackSpeedDecreaseSpeed;
     playbackSpeedBuffer = Math.max(playbackSpeedBuffer, options.minSpeed);
   }
   v0.playbackRate = v1.playbackRate = playbackSpeedBuffer;
