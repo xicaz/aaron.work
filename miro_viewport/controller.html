@@ -40,22 +40,22 @@ peer.on("connection", function(conn) {
     console.log('Received', data);
   });
 
-	document.getElementById("playSoundButton").addEventListener("onclick", function(e) {
+	document.getElementById("playSoundButton").addEventListener("click", function(e) {
 		conn.send("playSound");
 	});
-	document.getElementById("screenShakeEffectButton").addEventListener("onclick", function(e) {
+	document.getElementById("screenShakeEffectButton").addEventListener("click", function(e) {
 		conn.send("screenShakeEffect");
 	});
-	document.getElementById("playVideoButton").addEventListener("onclick", function(e) {
+	document.getElementById("playVideoButton").addEventListener("click", function(e) {
 		conn.send("playVideo");
 	});
-	document.getElementById("hideVideoButton").addEventListener("onclick", function(e) {
+	document.getElementById("hideVideoButton").addEventListener("click", function(e) {
 		conn.send("hideVideo");
 	});
-	document.getElementById("hideControlsButton").addEventListener("onclick", function(e) {
+	document.getElementById("hideControlsButton").addEventListener("click", function(e) {
 		conn.send("hideControls");
 	});
-	document.getElementById("showControlsButton").addEventListener("onclick", function(e) {
+	document.getElementById("showControlsButton").addEventListener("click", function(e) {
 		conn.send("showControls");
 	});
 })
