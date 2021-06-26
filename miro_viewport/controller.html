@@ -1,0 +1,65 @@
+<html>
+<head>
+<style>
+#fullscreenContent {
+	width:  100vw;
+	height:  100vh;
+	z-index: 10;
+	position: absolute;
+	top: 0;
+	left:  0;
+	background-color: white;
+	text-align: center;
+	/*line-height: 100vh;*/
+	font-size: 10vmin;
+}
+</style>
+<script src="peer.min.js"></script>
+</head>
+
+<body>
+<div id="fullscreenContent">
+	<button id="playSoundButton">play sound</button>
+	<button id="screenShakeEffectButton">screen shake effect</button>
+	<button id="playVideoButton">play video</button>
+	<button id="hideVideoButton">hide video</button>
+	<button id="hideControlsButton">hide controls</button>
+	<button id="showControlsButton">show controls</button>
+</div>
+
+<script type="text/javascript">
+
+var peer = new Peer("work-aaron-project_immerse_controller");
+peer.on('error', console.log);
+peer.on('open', function(id) {
+  console.log('My peer ID is: ' + id);
+});
+peer.on("connection", function(conn) {
+  // Receive messages
+  conn.on('data', function(data) {
+    console.log('Received', data);
+  });
+
+	document.getElementById("playSoundButton").onclick = function(e) {
+		conn.send("playSound");
+	}
+	document.getElementById("screenShakeEffectButton").onclick = function(e) {
+		conn.send("screenShakeEffect");
+	}
+	document.getElementById("playVideoButton").onclick = function(e) {
+		conn.send("playVideo");
+	}
+	document.getElementById("hideVideoButton").onclick = function(e) {
+		conn.send("hideVideo");
+	}
+	document.getElementById("hideControlsButton").onclick = function(e) {
+		conn.send("hideControls");
+	}
+	document.getElementById("showControlsButton").onclick = function(e) {
+		conn.send("showControls");
+	}
+})
+
+</script>
+</body>
+</html>
