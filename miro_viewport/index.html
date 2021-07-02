@@ -22,6 +22,7 @@
 }
 body {
 	background-color: black;
+	margin: 0;
 }
 #player {
 	position: absolute;
@@ -29,19 +30,39 @@ body {
 	height: 100vh;
 	z-index:  11;
 }
+#playerOverlay {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	z-index:  31;
+	background-color: transparent;
+}
 </style>
 <script src="peer.min.js"></script>
 <script src="html2canvas.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
+<script src="serverless_rooms.js"></script>
 </head>
 
 <body>
-<iframe id="miroIframe" src="https://miro.com/app/live-embed/o9J_l-ZMldc=/?moveToViewport=-374,-550,748,1100" scrolling="no" allowfullscreen="" style="width: 100vw;height: 100vh;position: absolute;top: 0px;left: 0px;" frameborder="0"></iframe>
+<iframe id="miroIframe" src="" scrolling="no" allowfullscreen="" style="width: 100vw;height: 100vh;position: absolute;top: 0px;left: 0px;" frameborder="0"></iframe>
 
-<div id="fullscreenContent">click to begin. Music: www.bensound.com</div>
+<div id="fullscreenContent">click to begin.</div>
+
+<div id="playerOverlay" style="display:none;"></div>
 <div id="player" style="display:none;"></div>
 
 <script type="text/javascript">
+let instanceId = "immersive_miro";
+
+const urlParams = new URLSearchParams(window.location.search);
+let miroUrl = urlParams.get("m");
+document.getElementById("miroIframe").src = decodeURI(miroUrl);
+
+if (urlParams.has("i")) {
+	instanceId += urlParams.get("i");
+}
+
 document.getElementById("fullscreenContent").onclick = function(e) {
 	let el = e.target;
 	e.target.style.display = "none";
@@ -67,7 +88,6 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
-
 // when ready, wait for clicks
 function onPlayerReady(event) {
   var player = event.target;
@@ -75,21 +95,14 @@ function onPlayerReady(event) {
   // setupListener(); 
 }
 
-var peer = new Peer();
-peer.on('error', console.log);
-let controllerId = "work-aaron-project_immerse_controller";
+let roomConnection = serverlessRooms.joinRoom(instanceId);
 
-peer.on("open", function() {
-	console.log("started");
-	var conn = peer.connect(controllerId);
-
-	conn.on('open', function() {
-	  // Receive messages
-	  conn.on('data', function(data) {
-	  	if (data == "playSound") {
-			var audio = new Audio('bensound-betterdays.mp3');
-			audio.play();
-			audio.currentTime = 3;
+let dataReceivedCallback = (data) => {
+	  	if (data.startsWith("playSound")) {
+	  		let audioUrl = data.slice(9);
+				var audio = new Audio(audioUrl);
+				audio.play();
+				audio.currentTime = 3;
 	  	}
 	  	else if (data == "outroEffect") {
 			html2canvas(document.querySelector("#miroIframe")).then(canvas => {
@@ -121,10 +134,12 @@ peer.on("open", function() {
 	  	}
 	  	else if (data == "playVideo") {
 	  		document.querySelector("#player").style.display = "";
+	  		document.querySelector("#playerOverlay").style.display = "";
 	  		player.playVideo();
 	  	}
 	  	else if (data == "hideVideo") {
 	  		document.querySelector("#player").style.display = "none";
+	  		document.querySelector("#playerOverlay").style.display = "none";
 	  		player.stopVideo();
 	  	}
 	  	else if (data == "hideControls") {
@@ -133,14 +148,18 @@ peer.on("open", function() {
 	  	else if (data == "showControls") {
 	  		document.querySelector("#miroIframe").classList.remove("controlsHidden");
 	  	}
-	    console.log('Received', data);
-	  	conn.send('Hello!');
-	  });
-
-	  // Send messages
-	  conn.send('Hello!');
-	});
-});
+	  	else if (data.startsWith("loadVideo")) {
+	  		player.loadVideoById(data.slice(9));
+	  	}
+	  	else if (data == "resetConnection") {
+	  		roomConnection.close();
+	  		setTimeout( () => {
+		  		roomConnection = serverlessRooms.joinRoom(instanceId);
+					roomConnection.on("message", dataReceivedCallback);
+				}, 5000);
+	  	}
+	  };
+roomConnection.on("message", dataReceivedCallback);
 
 
 </script>

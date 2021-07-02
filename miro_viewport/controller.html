@@ -2,63 +2,228 @@
 <head>
 <style>
 #fullscreenContent {
-	width:  100vw;
+	width:  50vw;
 	height:  100vh;
 	z-index: 10;
 	position: absolute;
 	top: 0;
-	left:  0;
+	left: 0;
 	background-color: white;
-	text-align: center;
+	text-align: left;
 	/*line-height: 100vh;*/
-	font-size: 10vmin;
+}
+#notes {
+	width:  50vw;
+	height:  100vh;
+	z-index: 10;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: lightgray;
+	margin: 0;
+	padding: .5em;
+	border: none;
+	/*line-height: 100vh;*/
+
+}
+body {
+	overflow: hidden;
+}
+#fullscreenContent > * {
+    margin: .3em 0;
+}
+
+textarea {
+  resize: none;
+}
+
+.host {
+	background-color: lightgreen !important;
 }
 </style>
+<script src="hbs.js"></script>
 <script src="peer.min.js"></script>
+<script src="serverless_rooms.js"></script>
 </head>
+<template id="input-button-template">
+	<div>
+		<input type="text" value="{{defaultValue}}">
+		<button>{{label}}</button>
+	</div>
+</template>
+<template id="button-template">
+	<div>
+		<button>{{label}}</button>
+	</div>
+</template>
 
 <body>
 <div id="fullscreenContent">
-	<button id="playSoundButton">play sound</button>
-	<button id="screenShakeEffectButton">screen shake effect</button>
-	<button id="playVideoButton">play video</button>
-	<button id="hideVideoButton">hide video</button>
-	<button id="hideControlsButton">hide controls</button>
-	<button id="showControlsButton">show controls</button>
+<div> instance: <input type="text" id="instanceId" value=""></div>
+<div>miro embed url: <input id="miroUrl" value="https://miro.com/app/live-embed/o9J_l-ZMldc=/?moveToViewport=-374,-550,748,1100"></div>
+<div>user URL: <input id="miroOutputUrl" readonly></div>
 </div>
+<textarea id="notes"></textarea>
 
 <script type="text/javascript">
+let instanceId = "immersive_miro";
+const urlParams = new URLSearchParams(window.location.search);
 
-var peer = new Peer("work-aaron-project_immerse_controller");
-peer.on('error', console.log);
-peer.on('open', function(id) {
-  console.log('My peer ID is: ' + id);
+if (urlParams.has("i")) {
+	instanceId += urlParams.get("i");
+	document.getElementById("instanceId").value = urlParams.get("i");
+}
+
+if (window.localStorage.getItem("notes" + instanceId) != null) {
+	document.getElementById("notes").value = window.localStorage.getItem("notes" + instanceId);
+}
+
+if (window.localStorage.getItem("miroUrl") != null) {
+	document.getElementById("miroUrl").value = window.localStorage.getItem("miroUrl");
+}
+
+if (document.getElementById("notes").value == "") {
+	document.getElementById("notes").value = `this text area is for holding notes.
+feel free to delete these instructions to have your own notes, they will be saved on refresh. notes are specific to specific instances.
+
+if you ever want to get the instructions back, delete everything in this text field and refresh.
+
+the instance field at the top allows for different pairings of controller URLs and user URLs. enter a new ID in that field to create an instance. The page will automatically refresh to switch to that instance.
+the Miro embed link field lets you specify which Miro board to show to users. Miro boards must be created specifically for being publicly embedded, see here for more information: https://help.miro.com/hc/en-us/articles/360016335640-Embedding-Editable-Boards-into-Websites
+make sure to only take the URL from the embed code
+
+user URLs contain the Miro board link AND the controller instance id. copy this link and share it to users to have them join the experience. you can use a URL shortener to make this URL shorter.
+
+clicking any buttons on a controller causes the specified action to occur on all users on that instance.
+audio must be a publicly hosted audio file. mp3 is recommended as it has wide browser support.
+
+videos must be a youtube video. while the video is playing, mouse input is disabled for users so they cannot pause or scrub the video.
+
+if the panel to the left of these notes are green--this tab is the "host" tab and all users connect to it.
+you can close the host tab safely, everyone will reconnect to a new host after a couple seconds.
+
+if you want to force a controller to be the host, click the become host button.
+all users and controller tabs will be temporarily disconnected while the host is established.
+`
+}
+
+document.getElementById("notes").oninput = () => {
+	window.localStorage.setItem("notes" + instanceId, document.getElementById("notes").value);
+}
+
+document.getElementById("instanceId").onchange = () => {
+	let url = location.href.replace(location.search, '')
+	url += "?i=" + document.getElementById("instanceId").value;
+	window.location = url;
+};
+
+let updateUserURL = () => {
+	let miroUrl = document.getElementById("miroUrl").value;
+	window.localStorage.setItem("miroUrl", miroUrl);
+	let baseUrl = new URL("https://aaron.work/miro_viewport/");
+	baseUrl.searchParams.set("m", encodeURI(document.getElementById("miroUrl").value));
+	if (urlParams.has("i"))
+		baseUrl.searchParams.set("i", urlParams.get("i"));
+	document.getElementById("miroOutputUrl").value = baseUrl.href;
+};
+document.getElementById("miroUrl").onchange = updateUserURL;
+updateUserURL();
+
+function YouTubeGetID(url){
+  var ID = '';
+  url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+  if(url[2] !== undefined) {
+    ID = url[2].split(/[^0-9a-z_\-]/i);
+    ID = ID[0];
+  }
+  else {
+    ID = url;
+  }
+    return ID;
+}
+
+var inputButtonTemplate = document.getElementById('input-button-template').innerHTML;
+var renderInputButton = Handlebars.compile(inputButtonTemplate);
+var buttonTemplate = document.getElementById('button-template').innerHTML;
+var renderButton = Handlebars.compile(buttonTemplate);
+
+let createButton = function(label, message, extraFunc) {
+	let container = document.getElementById("fullscreenContent");
+	container.insertAdjacentHTML('beforeend', renderButton({label:label}));
+	let buttonElList = container.lastElementChild.getElementsByTagName("button");
+	buttonElList[buttonElList.length - 1].addEventListener("click", function(e) {
+		if (message != "") roomConnection.message(message);
+		if (extraFunc != null) extraFunc();
+	});
+}
+let createInputButton = function(label, defaultValue, message, parseFunc, extraFunc) {
+	let container = document.getElementById("fullscreenContent");
+	container.insertAdjacentHTML('beforeend', renderInputButton({label:label, defaultValue:defaultValue}));
+
+	let buttonElList = container.lastElementChild.getElementsByTagName("button");
+	let inputElList = container.lastElementChild.getElementsByTagName("input");
+	let myInput = inputElList[inputElList.length - 1];
+	buttonElList[buttonElList.length - 1].addEventListener("click", function(e) {
+		let val = myInput.value;
+		if (parseFunc != null) val = parseFunc(val);
+		if (message != "") roomConnection.message(message + val);
+		if (extraFunc != null) extraFunc(val);
+	});
+}
+
+let roomConnection = null;
+
+
+let dataReceivedCallback = (data) => {
+	if (data == "resetConnection") {
+		roomConnection.close();
+		setTimeout( () => {
+			resetRoomConnection();
+		}, 5000);
+	}
+}
+let resetRoomConnection = () => {
+		roomConnection = serverlessRooms.joinRoom(instanceId);
+		roomConnection.on("message",dataReceivedCallback);
+		roomConnection.on("status", function(message) {
+			console.log(message);
+				if (message == "host") {
+			console.log(message);
+					document.getElementById("fullscreenContent").className = "host";
+				}
+				else {
+					document.getElementById("fullscreenContent").className = "";
+				}
+			});
+}
+resetRoomConnection();
+// var peer = new Peer("work-aaron-project_immerse_controller");
+// peer.on('error', console.log);
+// peer.on('open', function(id) {
+//   console.log('My peer ID is: ' + id);
+// });
+// peer.on("connection", function(conn) {
+//   // Receive messages
+//   conn.on('data', function(data) {
+//     console.log('Received', data);
+//   });
+
+createInputButton("play sound", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound");
+createButton("screen shake", "screenShakeEffect");
+createInputButton("load youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo", (v) => {
+	return YouTubeGetID(v);
 });
-peer.on("connection", function(conn) {
-  // Receive messages
-  conn.on('data', function(data) {
-    console.log('Received', data);
-  });
-
-	document.getElementById("playSoundButton").addEventListener("click", function(e) {
-		conn.send("playSound");
-	});
-	document.getElementById("screenShakeEffectButton").addEventListener("click", function(e) {
-		conn.send("screenShakeEffect");
-	});
-	document.getElementById("playVideoButton").addEventListener("click", function(e) {
-		conn.send("playVideo");
-	});
-	document.getElementById("hideVideoButton").addEventListener("click", function(e) {
-		conn.send("hideVideo");
-	});
-	document.getElementById("hideControlsButton").addEventListener("click", function(e) {
-		conn.send("hideControls");
-	});
-	document.getElementById("showControlsButton").addEventListener("click", function(e) {
-		conn.send("showControls");
-	});
-})
+createButton("play video", "playVideo");
+createButton("hide video", "hideVideo");
+createButton("hide controls", "hideControls");
+createButton("show controls", "showControls");
+createButton("become host (temporarily disconnects all users)", "resetConnection", 
+		function() {setTimeout(() => {
+					roomConnection.close();
+					resetRoomConnection();
+				}, 1000);
+		});;
+// })
 
 </script>
 </body>
