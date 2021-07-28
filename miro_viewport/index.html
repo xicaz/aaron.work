@@ -39,7 +39,6 @@ body {
 }
 </style>
 <script src="peer.min.js"></script>
-<script src="html2canvas.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="serverless_rooms.js"></script>
 </head>
@@ -65,6 +64,8 @@ document.getElementById("miroIframe").src = decodeURI(miroUrl);
 if (urlParams.has("i")) {
 	instanceId += urlParams.get("i");
 }
+
+history.replaceState({}, null, window.location.href.split('?')[0]);
 
 document.getElementById("fullscreenContent").onclick = function(e) {
 	let el = e.target;
@@ -135,11 +136,6 @@ let dataReceivedCallback = (data) => {
 	  		let audioLevel = data.slice(12);
 	  		let audioIndex = data[11];
 				if(audioIndex in audios) audios[audioIndex].volume = parseFloat(audioLevel)/100;
-	  	}
-	  	else if (data == "outroEffect") {
-			html2canvas(document.querySelector("#miroIframe")).then(canvas => {
-			    document.body.appendChild(canvas)
-			});
 	  	}
 	  	else if (data == "screenShakeEffect") {
 	  		let shakeTime = 2;

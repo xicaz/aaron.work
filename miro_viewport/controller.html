@@ -68,7 +68,7 @@ textarea {
 <div id="fullscreenContent">
 <div> instance: <input type="text" id="instanceId" value=""></div>
 <div>miro embed url: <input id="miroUrl" value="https://miro.com/app/live-embed/o9J_l-ZMldc=/?moveToViewport=-374,-550,748,1100"></div>
-<div>user URL: <input id="miroOutputUrl" readonly></div>
+<div>user URL: <a id="miroOutputUrl"></a></div>
 </div>
 <textarea id="notes"></textarea>
 
@@ -131,7 +131,7 @@ let updateUserURL = () => {
 	baseUrl.searchParams.set("m", encodeURI(document.getElementById("miroUrl").value));
 	if (urlParams.has("i"))
 		baseUrl.searchParams.set("i", urlParams.get("i"));
-	document.getElementById("miroOutputUrl").value = baseUrl.href;
+	document.getElementById("miroOutputUrl").innerHTML = baseUrl.href;
 };
 document.getElementById("miroUrl").onchange = updateUserURL;
 updateUserURL();
