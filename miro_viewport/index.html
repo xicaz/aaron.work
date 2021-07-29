@@ -4,7 +4,7 @@
 #fullscreenContent {
 	width:  100vw;
 	height:  100vh;
-	z-index: 10;
+	z-index: 60;
 	position: absolute;
 	top: 0;
 	left:  0;
@@ -30,14 +30,23 @@ body {
 	height: 100vh;
 	z-index:  11;
 }
-#playerOverlay {
+.playerOverlay {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	z-index:  41;
+	background-color: transparent;
+}
+#fadeOverlay {
 	position: absolute;
 	width: 100vw;
 	height: 100vh;
 	z-index:  31;
-	background-color: transparent;
+	background-color: black;
+	opacity: 0;
 }
 </style>
+<script src="anime.js"></script>
 <script src="peer.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="serverless_rooms.js"></script>
@@ -48,16 +57,37 @@ body {
 
 <div id="fullscreenContent">click to begin.</div>
 
-<div id="playerOverlay" style="display:none;"></div>
-<div id="player1" class="ytPlayer" style="display:none;"></div>
-<div id="player2" class="ytPlayer" style="display:none;"></div>
-<div id="player3" class="ytPlayer" style="display:none;"></div>
-<div id="player4" class="ytPlayer" style="display:none;"></div>
+
+<div id="fadeOverlay" style="display:none"></div>
+<div id="playerContainer1"  style="display:none;">
+	<div id="player1" class="ytPlayer"></div>
+	 <div class="playerOverlay"></div>
+</div>
+<div id="playerContainer2"  style="display:none;">
+	<div id="player2" class="ytPlayer"></div>
+	 <div class="playerOverlay"></div>
+</div>
+<div id="playerContainer3"  style="display:none;">
+	<div id="player3" class="ytPlayer"></div>
+	 <div class="playerOverlay"></div>
+</div>
+<div id="playerContainer4"  style="display:none;">
+	<div id="player4" class="ytPlayer"></div>
+	 <div class="playerOverlay"></div>
+</div>
 
 <script type="text/javascript">
+
+
 let instanceId = "immersive_miro";
 
+if (window.location.search == "") {
+	if (window.localStorage.getItem("immersiveSearchParams") != null) {
+		window.location.search = window.localStorage.getItem("immersiveSearchParams");
+	}
+}
 const urlParams = new URLSearchParams(window.location.search);
+window.localStorage.setItem("immersiveSearchParams", window.location.search);
 let miroUrl = urlParams.get("m");
 document.getElementById("miroIframe").src = decodeURI(miroUrl);
 
@@ -121,16 +151,25 @@ function onPlayerReady(event) {
 let roomConnection = serverlessRooms.joinRoom(instanceId);
 
 let audios = {};
+let audiosShouldLoop = {};
 let dataReceivedCallback = (data) => {
 	  	if (data.startsWith("playSound")) {
 	  		let audioUrl = data.slice(10);
-	  		let soundIndex = data[9];
-				audios[soundIndex] = new Audio(audioUrl);
-				audios[soundIndex].play();
+	  		let audioIndex = data[9];
+				if(audioIndex in audios) audios[audioIndex].pause();
+				audios[audioIndex] = new Audio(audioUrl);
+				audios[audioIndex].play();
+				if (audioIndex in audiosShouldLoop)
+					audios[audioIndex].loop = parseBool(audiosShouldLoop[audioIndex]);
 	  	}
 	  	else if (data.startsWith("stopSound")) {
 	  		let audioIndex = data[9];
 				if(audioIndex in audios) audios[audioIndex].pause();
+	  	}
+	  	else if (data.startsWith("loopSound")) {
+	  		let audioIndex = data[9];
+				if(audioIndex in audios) audios[audioIndex].loop = parseBool(data.slice(10));
+				audiosShouldLoop[audioIndex] = parseBool(data.slice(10));
 	  	}
 	  	else if (data.startsWith("volumeSound")) {
 	  		let audioLevel = data.slice(12);
@@ -162,15 +201,24 @@ let dataReceivedCallback = (data) => {
 	  	}
 	  	else if (data.startsWith("playVideo")) {
 	  		let playerIndex = data[9];
-	  		document.querySelector("#player" + playerIndex).style.display = "";
-	  		document.querySelector("#playerOverlay").style.display = "";
+	  		if (players[playerIndex] != null) {
+	  			players[playerIndex].stopVideo();
+	  		}
+	  		document.querySelector("#playerContainer" + playerIndex).style.display = "";
 	  		players[playerIndex].playVideo();
 	  	}
 	  	else if (data.startsWith("hideVideo")) {
 	  		let playerIndex = data[9];
-	  		document.querySelector("#player" + playerIndex).style.display = "none";
-	  		document.querySelector("#playerOverlay").style.display = "none";
+	  		document.querySelector("#playerContainer" + playerIndex).style.display = "none";
 	  		players[playerIndex].stopVideo();
+	  	}
+	  	else if (data.startsWith("loadVideo")) {
+	  		let playerIndex = data[9];
+	  		if (players[playerIndex] != null) {
+	  			players[playerIndex].stopVideo();
+	  		}
+	  		players[playerIndex].loadVideoById(data.slice(10));
+	  		document.querySelector("#playerContainer" + playerIndex).style.display = "";
 	  	}
 	  	else if (data == "hideControls") {
 	  		document.querySelector("#miroIframe").classList.add("controlsHidden");
@@ -178,18 +226,30 @@ let dataReceivedCallback = (data) => {
 	  	else if (data == "showControls") {
 	  		document.querySelector("#miroIframe").classList.remove("controlsHidden");
 	  	}
-	  	else if (data.startsWith("loadVideo")) {
-	  		let playerIndex = data[9];
-	  		players[playerIndex].loadVideoById(data.slice(10));
-	  		document.querySelector("#player" + playerIndex).style.display = "";
-	  		document.querySelector("#playerOverlay").style.display = "";
-	  	}
 	  	else if (data == "resetConnection") {
 	  		roomConnection.close();
 	  		setTimeout( () => {
 		  		roomConnection = serverlessRooms.joinRoom(instanceId);
 					roomConnection.on("message", dataReceivedCallback);
 				}, 5000);
+	  	}
+	  	else if (data == "fadeOut") {
+	  		let fadeOverlay = document.getElementById("fadeOverlay");
+			  fadeOverlay.style.display = "";
+	  		anime({
+				  targets: '#fadeOverlay',
+				  opacity: 1
+				});
+	  	}
+	  	else if (data == "fadeIn") {
+	  		let fadeOverlay = document.getElementById("fadeOverlay");
+	  		anime({
+				  targets: '#fadeOverlay',
+				  opacity: 0,
+				  // complete: function(anim) {
+			  	// 	fadeOverlay.style.display = "none";
+				  // }
+				});
 	  	}
 	  };
 roomConnection.on("message", dataReceivedCallback);

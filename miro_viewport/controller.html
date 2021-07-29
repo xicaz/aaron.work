@@ -63,7 +63,11 @@ textarea {
   <a>{{label}}</a><input type="range" min="1" max="100" value="100" class="slider">
 </div>
 </template>
-
+<template id="checkbox-template">
+<div>
+  <a>{{label}}</a><input type="checkbox">
+</div>
+</template>
 <body>
 <div id="fullscreenContent">
 <div> instance: <input type="text" id="instanceId" value=""></div>
@@ -155,6 +159,8 @@ var buttonTemplate = document.getElementById('button-template').innerHTML;
 var renderButton = Handlebars.compile(buttonTemplate);
 var sliderTemplate = document.getElementById('slider-template').innerHTML;
 var renderSlider = Handlebars.compile(sliderTemplate);
+var checkboxTemplate = document.getElementById('checkbox-template').innerHTML;
+var renderCheckbox = Handlebars.compile(checkboxTemplate);
 
 let createButton = function(label, message, extraFunc) {
 	let container = document.getElementById("fullscreenContent");
@@ -164,14 +170,25 @@ let createButton = function(label, message, extraFunc) {
 		if (message != "") roomConnection.message(message);
 		if (extraFunc != null) extraFunc();
 	});
+
+	document.getElementById("miroUrl").onchange = updateUserURL;
 }
 let createInputButton = function(label, defaultValue, message, parseFunc, extraFunc) {
 	let container = document.getElementById("fullscreenContent");
 	container.insertAdjacentHTML('beforeend', renderInputButton({label:label, defaultValue:defaultValue}));
 
+
 	let buttonElList = container.lastElementChild.getElementsByTagName("button");
 	let inputElList = container.lastElementChild.getElementsByTagName("input");
 	let myInput = inputElList[inputElList.length - 1];
+
+	let localStorageId = label + instanceId;
+	if (window.localStorage.getItem(localStorageId) != null) {
+		myInput.value = window.localStorage.getItem(localStorageId);
+	}
+	myInput.onchange = function() {
+		window.localStorage.setItem(localStorageId, myInput.value);
+	};
 	buttonElList[buttonElList.length - 1].addEventListener("click", function(e) {
 		let val = myInput.value;
 		if (parseFunc != null) val = parseFunc(val);
@@ -180,6 +197,19 @@ let createInputButton = function(label, defaultValue, message, parseFunc, extraF
 	});
 }
 
+let createCheckbox = function(label, message, extraFunc) {
+	let container = document.getElementById("fullscreenContent");
+	container.insertAdjacentHTML('beforeend', renderCheckbox({label:label}));
+	let inputElList = container.lastElementChild.getElementsByTagName("input");
+	let inputEl = inputElList[inputElList.length - 1];
+	inputEl.addEventListener("click", function(e) {
+		if (message != "") roomConnection.message(message + inputEl.value);
+		if (extraFunc != null) extraFunc();
+	});
+	setInterval(function() {
+		if (message != "") roomConnection.message(message + inputEl.value);
+	}, 1000)
+}
 let createSlider = function(label, message, parseFunc, extraFunc) {
 
 	let container = document.getElementById("fullscreenContent");
@@ -234,6 +264,9 @@ resetRoomConnection();
 
 createButton("screen shake", "screenShakeEffect");
 
+createButton("fade out", "fadeOut");
+createButton("fade in", "fadeIn");
+
 createButton("hide controls", "hideControls");
 createButton("show controls", "showControls");
 
@@ -241,18 +274,22 @@ createButton("show controls", "showControls");
 createInputButton("play sound 1", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound1");
 createButton("stop sound 1", "stopSound1");
 createSlider("sound 1 volume", "volumeSound1");
+createCheckbox("sound 1 loop", "loopSound1");
 
-createInputButton("play sound 2", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound2");
+createInputButton("play sound 2", "https://aaron.work/miro_viewport/330968__cormi__melancholic-arpeggio.wav", "playSound2");
 createButton("stop sound 2", "stopSound2");
 createSlider("sound 2 volume", "volumeSound2");
+createCheckbox("sound 2 loop", "loopSound2");
 
 createInputButton("play sound 3", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound3");
 createButton("stop sound 3", "stopSound3");
 createSlider("sound 3 volume", "volumeSound3");
+createCheckbox("sound 3 loop", "loopSound3");
 
 createInputButton("play sound 4", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound4");
 createButton("stop sound 4", "stopSound4");
 createSlider("sound 4 volume", "volumeSound4");
+createCheckbox("sound 4 loop", "loopSound4");
 
 createInputButton("load and play youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo1", (v) => {
 	return YouTubeGetID(v);
