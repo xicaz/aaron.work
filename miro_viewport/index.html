@@ -160,7 +160,7 @@ let dataReceivedCallback = (data) => {
 				audios[audioIndex] = new Audio(audioUrl);
 				audios[audioIndex].play();
 				if (audioIndex in audiosShouldLoop)
-					audios[audioIndex].loop = parseBool(audiosShouldLoop[audioIndex]);
+					audios[audioIndex].loop = audiosShouldLoop[audioIndex];
 	  	}
 	  	else if (data.startsWith("stopSound")) {
 	  		let audioIndex = data[9];
@@ -168,8 +168,8 @@ let dataReceivedCallback = (data) => {
 	  	}
 	  	else if (data.startsWith("loopSound")) {
 	  		let audioIndex = data[9];
-				if(audioIndex in audios) audios[audioIndex].loop = parseBool(data.slice(10));
-				audiosShouldLoop[audioIndex] = parseBool(data.slice(10));
+				if(audioIndex in audios) audios[audioIndex].loop = (data.slice(10) == 'true');
+				audiosShouldLoop[audioIndex] = (data.slice(10) == 'true');
 	  	}
 	  	else if (data.startsWith("volumeSound")) {
 	  		let audioLevel = data.slice(12);

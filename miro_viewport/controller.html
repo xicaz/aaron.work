@@ -203,11 +203,11 @@ let createCheckbox = function(label, message, extraFunc) {
 	let inputElList = container.lastElementChild.getElementsByTagName("input");
 	let inputEl = inputElList[inputElList.length - 1];
 	inputEl.addEventListener("click", function(e) {
-		if (message != "") roomConnection.message(message + inputEl.value);
+		if (message != "") roomConnection.message(message + inputEl.checked);
 		if (extraFunc != null) extraFunc();
 	});
 	setInterval(function() {
-		if (message != "") roomConnection.message(message + inputEl.value);
+		if (message != "") roomConnection.message(message + inputEl.checked);
 	}, 1000)
 }
 let createSlider = function(label, message, parseFunc, extraFunc) {
