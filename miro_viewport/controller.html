@@ -1,20 +1,23 @@
 <html>
 <head>
 <style>
-#fullscreenContent {
-	width:  50vw;
+#fullscreenContainer {
+	width:  70vw;
 	height:  100vh;
-	z-index: 10;
 	position: absolute;
+	overflow: scroll;
+}
+#fullscreenContent {
+	z-index: 10;
 	top: 0;
 	left: 0;
 	background-color: white;
 	text-align: left;
-	overflow: scroll;
 	/*line-height: 100vh;*/
+	padding:  2vw;
 }
 #notes {
-	width:  50vw;
+	width:  30vw;
 	height:  100vh;
 	z-index: 10;
 	position: absolute;
@@ -36,26 +39,35 @@ body {
 
 textarea {
   resize: none;
+  font-size: 1vw;
 }
 
 .host {
 	background-color: lightgreen !important;
 }
 </style>
+
+<link href="bulma.min.css" rel="stylesheet">
 <script src="lodash.js"></script>
 <script src="hbs.js"></script>
 <script src="peer.min.js"></script>
 <script src="serverless_rooms.js"></script>
 </head>
 <template id="input-button-template">
-	<div>
-		<input type="text" value="{{defaultValue}}">
-		<button>{{label}}</button>
-	</div>
+<div class="field has-addons">
+  <div class="control is-expanded">
+    <input class="input" type="text" value="{{defaultValue}}">
+  </div>
+  <div class="control">
+    <a class="button is-info">
+      {{label}}
+    </a>
+  </div>
+</div>
 </template>
 <template id="button-template">
-	<div>
-		<button>{{label}}</button>
+	<div class="control">
+		<button class="button is-fullwidth">{{label}}</button>
 	</div>
 </template>
 <template id="slider-template">
@@ -65,14 +77,64 @@ textarea {
 </template>
 <template id="checkbox-template">
 <div>
-  <a>{{label}}</a><input type="checkbox">
+  <label class="checkbox">{{label}} <input type="checkbox"></label>
+</div>
+</template>
+<template id="container-template">
+<div class="tile is-parent box is-vertical">
+	<h4 class="title is-4">{{title}}</h4>
+	<div class="field">
+	</div>
 </div>
 </template>
 <body>
-<div id="fullscreenContent">
-<div> instance: <input type="text" id="instanceId" value=""></div>
-<div>miro embed url: <input id="miroUrl" value="https://miro.com/app/live-embed/o9J_l-ZMldc=/?moveToViewport=-374,-550,748,1100"></div>
-<div>user URL: <a id="miroOutputUrl"></a></div>
+<div id="fullscreenContainer">
+	<div id="fullscreenContent" class="tile is-ancestor is-horizontal">
+		<div id="leftColumn" class="tile is-parent is-vertical is-6">
+			<div class="tile is-parent box is-vertical">
+				<h4 class="title is-4">URL controls</h4>
+				<div class="field is-horizontal">
+					<div class="field-label is-normal">
+			    <label class="label">instance:</label>
+				  </div>
+				  <div class="field-body">
+				    <div class="field">
+				      <p class="control">
+				        <input id="instanceId" class="input" type="text">
+				      </p>
+				    </div>
+				  </div>
+				</div>
+				<div class="field is-horizontal">
+					<div class="field-label is-normal">
+			    	<label class="label">miro embed url:</label>
+				  </div>
+				  <div class="field-body">
+				    <div class="field">
+				      <p class="control">
+				        <input class="input" type="text"  id="miroUrl" value="https://miro.com/app/live-embed/o9J_l-ZMldc=/?moveToViewport=-374,-550,748,1100">
+				      </p>
+				    </div>
+				  </div>
+				</div>
+				<div class="field is-horizontal">
+					<div class="field-label is-normal">
+						<label class="label">user URL (read only):</label>
+					</div>
+				  <div class="field-body">
+				    <div class="field">
+				      <p class="control">
+								<input id="miroOutputUrl" class="input" type="text" value="This text is readonly" readonly>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+		<div id="rightColumn" class="tile is-parent is-vertical is-6">
+		</div>
+	</div>
 </div>
 <textarea id="notes"></textarea>
 
@@ -135,7 +197,7 @@ let updateUserURL = () => {
 	baseUrl.searchParams.set("m", encodeURI(document.getElementById("miroUrl").value));
 	if (urlParams.has("i"))
 		baseUrl.searchParams.set("i", urlParams.get("i"));
-	document.getElementById("miroOutputUrl").innerHTML = baseUrl.href;
+	document.getElementById("miroOutputUrl").value = baseUrl.href;
 };
 document.getElementById("miroUrl").onchange = updateUserURL;
 updateUserURL();
@@ -153,17 +215,40 @@ function YouTubeGetID(url){
     return ID;
 }
 
-var inputButtonTemplate = document.getElementById('input-button-template').innerHTML;
-var renderInputButton = Handlebars.compile(inputButtonTemplate);
-var buttonTemplate = document.getElementById('button-template').innerHTML;
-var renderButton = Handlebars.compile(buttonTemplate);
-var sliderTemplate = document.getElementById('slider-template').innerHTML;
-var renderSlider = Handlebars.compile(sliderTemplate);
-var checkboxTemplate = document.getElementById('checkbox-template').innerHTML;
-var renderCheckbox = Handlebars.compile(checkboxTemplate);
+let inputButtonTemplate = document.getElementById('input-button-template').innerHTML;
+let renderInputButton = Handlebars.compile(inputButtonTemplate);
+let buttonTemplate = document.getElementById('button-template').innerHTML;
+let renderButton = Handlebars.compile(buttonTemplate);
+let sliderTemplate = document.getElementById('slider-template').innerHTML;
+let renderSlider = Handlebars.compile(sliderTemplate);
+let checkboxTemplate = document.getElementById('checkbox-template').innerHTML;
+let renderCheckbox = Handlebars.compile(checkboxTemplate);
+
+let containerTemplate = document.getElementById('container-template').innerHTML;
+let renderContainer = Handlebars.compile(containerTemplate);
+
+let topLevelContainer = document.getElementById("leftColumn");
+let container = document.getElementById("leftColumn");
+let isCurrentlyDefaultContainer = false;
+
+let createNewContainer = function(title) {
+	topLevelContainer.insertAdjacentHTML('beforeend', renderContainer({title: title}));
+	container = topLevelContainer.children[topLevelContainer.children.length - 1];
+	while (container.children.length > 0) {
+		container = container.children[container.children.length - 1];
+	}
+	// container = document.createElement("div");
+	// container.classList.add("tile");
+	// container.classList.add("is-parent");
+	// container.classList.add("box")
+
+	// topLevelContainer.appendChild(container);
+}
+let switchColumns = function() {
+	topLevelContainer = document.getElementById("rightColumn");
+}
 
 let createButton = function(label, message, extraFunc) {
-	let container = document.getElementById("fullscreenContent");
 	container.insertAdjacentHTML('beforeend', renderButton({label:label}));
 	let buttonElList = container.lastElementChild.getElementsByTagName("button");
 	buttonElList[buttonElList.length - 1].addEventListener("click", function(e) {
@@ -174,11 +259,10 @@ let createButton = function(label, message, extraFunc) {
 	document.getElementById("miroUrl").onchange = updateUserURL;
 }
 let createInputButton = function(label, defaultValue, message, parseFunc, extraFunc) {
-	let container = document.getElementById("fullscreenContent");
 	container.insertAdjacentHTML('beforeend', renderInputButton({label:label, defaultValue:defaultValue}));
 
 
-	let buttonElList = container.lastElementChild.getElementsByTagName("button");
+	let buttonElList = container.lastElementChild.getElementsByClassName("button");
 	let inputElList = container.lastElementChild.getElementsByTagName("input");
 	let myInput = inputElList[inputElList.length - 1];
 
@@ -198,7 +282,6 @@ let createInputButton = function(label, defaultValue, message, parseFunc, extraF
 }
 
 let createCheckbox = function(label, message, extraFunc) {
-	let container = document.getElementById("fullscreenContent");
 	container.insertAdjacentHTML('beforeend', renderCheckbox({label:label}));
 	let inputElList = container.lastElementChild.getElementsByTagName("input");
 	let inputEl = inputElList[inputElList.length - 1];
@@ -211,8 +294,6 @@ let createCheckbox = function(label, message, extraFunc) {
 	}, 1000)
 }
 let createSlider = function(label, message, parseFunc, extraFunc) {
-
-	let container = document.getElementById("fullscreenContent");
 	container.insertAdjacentHTML('beforeend', renderSlider({label:label}));
 	let inputElList = container.lastElementChild.getElementsByTagName("input");
 	let myInput = inputElList[inputElList.length - 1];
@@ -241,13 +322,13 @@ let resetRoomConnection = () => {
 		roomConnection.on("message",dataReceivedCallback);
 		roomConnection.on("status", function(message) {
 			console.log(message);
-				if (message == "host") {
-			console.log(message);
-					document.getElementById("fullscreenContent").className = "host";
-				}
-				else {
-					document.getElementById("fullscreenContent").className = "";
-				}
+			// 	if (message == "host") {
+			// console.log(message);
+			// 		document.getElementById("fullscreenContent").className = "host";
+			// 	}
+			// 	else {
+			// 		document.getElementById("fullscreenContent").className = "";
+			// 	}
 			});
 }
 resetRoomConnection();
@@ -262,6 +343,35 @@ resetRoomConnection();
 //     console.log('Received', data);
 //   });
 
+
+createNewContainer("audio slot 1");
+createInputButton("play", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound1");
+createButton("stop sound", "stopSound1");
+createSlider("volume", "volumeSound1");
+createCheckbox("loop", "loopSound1");
+
+createNewContainer("audio slot 2");
+createInputButton("play", "https://aaron.work/miro_viewport/330968__cormi__melancholic-arpeggio.wav", "playSound2");
+createButton("stop sound", "stopSound2");
+createSlider("volume", "volumeSound2");
+createCheckbox("loop", "loopSound2");
+
+createNewContainer("audio slot 3");
+createInputButton("play", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound3");
+createButton("stop sound", "stopSound3");
+createSlider("volume", "volumeSound3");
+createCheckbox("loop", "loopSound3");
+
+createNewContainer("audio slot 4");
+createInputButton("play", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound4");
+createButton("stop sound", "stopSound4");
+createSlider("volume", "volumeSound4");
+createCheckbox("loop", "loopSound4");
+
+//
+switchColumns();
+
+createNewContainer("effects");
 createButton("screen shake", "screenShakeEffect");
 
 createButton("fade out", "fadeOut");
@@ -271,56 +381,42 @@ createButton("hide controls", "hideControls");
 createButton("show controls", "showControls");
 
 
-createInputButton("play sound 1", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound1");
-createButton("stop sound 1", "stopSound1");
-createSlider("sound 1 volume", "volumeSound1");
-createCheckbox("sound 1 loop", "loopSound1");
-
-createInputButton("play sound 2", "https://aaron.work/miro_viewport/330968__cormi__melancholic-arpeggio.wav", "playSound2");
-createButton("stop sound 2", "stopSound2");
-createSlider("sound 2 volume", "volumeSound2");
-createCheckbox("sound 2 loop", "loopSound2");
-
-createInputButton("play sound 3", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound3");
-createButton("stop sound 3", "stopSound3");
-createSlider("sound 3 volume", "volumeSound3");
-createCheckbox("sound 3 loop", "loopSound3");
-
-createInputButton("play sound 4", "https://aaron.work/miro_viewport/bensound-betterdays.mp3", "playSound4");
-createButton("stop sound 4", "stopSound4");
-createSlider("sound 4 volume", "volumeSound4");
-createCheckbox("sound 4 loop", "loopSound4");
-
-createInputButton("load and play youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo1", (v) => {
+createNewContainer("video slot 1");
+createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo1", (v) => {
 	return YouTubeGetID(v);
 });
 createButton("play video", "playVideo1");
 createButton("hide video", "hideVideo1");
 
-createInputButton("load and play  youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo2", (v) => {
+createNewContainer("video slot 2");
+createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo2", (v) => {
 	return YouTubeGetID(v);
 });
 createButton("play video", "playVideo2");
 createButton("hide video", "hideVideo2");
 
-createInputButton("load and play youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo3", (v) => {
+createNewContainer("video slot 3");
+createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo3", (v) => {
 	return YouTubeGetID(v);
 });
 createButton("play video", "playVideo3");
 createButton("hide video", "hideVideo3");
 
-createInputButton("load and play youtube video", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo4", (v) => {
+createNewContainer("video slot 4");
+createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo4", (v) => {
 	return YouTubeGetID(v);
 });
 createButton("play video", "playVideo4");
 createButton("hide video", "hideVideo4");
 
+createNewContainer("admin controls");
 createButton("become host (temporarily disconnects all users)", "resetConnection", 
 		function() {setTimeout(() => {
 					roomConnection.close();
 					resetRoomConnection();
 				}, 1000);
 		});;
+
 // })
 
 </script>
