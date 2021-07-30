@@ -220,6 +220,19 @@ let dataReceivedCallback = (data) => {
 	  		players[playerIndex].loadVideoById(data.slice(10));
 	  		document.querySelector("#playerContainer" + playerIndex).style.display = "";
 	  	}
+	  	else if (data.startsWith("stopAllAudio")) {
+	  		for (let key in audios) {
+	  			let audio = audios[key];
+	  			audio.pause();
+	  		}
+	  	}
+	  	else if (data.startsWith("stopAllVideo")) {
+	  		for (let key in players) {
+	  			let player = players[key];
+	  			document.querySelector("#playerContainer" + key).style.display = "none";
+	  			player.stopVideo();
+	  		}
+	  	}
 	  	else if (data == "hideControls") {
 	  		document.querySelector("#miroIframe").classList.add("controlsHidden");
 	  	}
