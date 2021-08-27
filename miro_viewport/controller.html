@@ -346,7 +346,20 @@ resetRoomConnection();
 createNewContainer("controls");
 createButton("stop all audio", "stopAllAudio");
 createButton("stop all video", "stopAllVideo");
+let fullscreenOriginalWidth = "";
+createButton("toggle side panel", null, function() {
+	let notesEl = document.getElementById("notes");
+	let fullscreenEl = document.getElementById("fullscreenContainer");
 
+	if (notesEl.style.display != "") {
+		fullscreenEl.style.width = fullscreenOriginalWidth;
+		notesEl.style.display = "";
+	} else {
+		if (fullscreenOriginalWidth == "") fullscreenOriginalWidth = fullscreenEl.style.width;
+		notesEl.style.display = "none";
+		fullscreenEl.style.width = "100vw";
+	}
+})
 
 
 createNewContainer("audio slot 1");
@@ -386,6 +399,21 @@ createButton("hide controls", "hideControls");
 createButton("show controls", "showControls");
 
 
+createNewContainer("url slot 1");
+createInputButton("load", "https://aaronsantiago.github.io/simple-clock/", "loadIFrame1", (v) => {
+	return YouTubeGetID(v);
+});
+createButton("play url", "showIFrame1");
+createButton("hide url", "hideIFrame1");
+
+createNewContainer("url slot 2");
+createInputButton("load", "https://aaronsantiago.github.io/simple-clock/", "loadIFrame2", (v) => {
+	return YouTubeGetID(v);
+});
+createButton("play url", "showIFrame2");
+createButton("hide url", "hideIFrame2");
+
+
 createNewContainer("video slot 1");
 createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo1", (v) => {
 	return YouTubeGetID(v);
@@ -399,20 +427,6 @@ createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 });
 createButton("play video", "playVideo2");
 createButton("hide video", "hideVideo2");
-
-createNewContainer("video slot 3");
-createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo3", (v) => {
-	return YouTubeGetID(v);
-});
-createButton("play video", "playVideo3");
-createButton("hide video", "hideVideo3");
-
-createNewContainer("video slot 4");
-createInputButton("load and play", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "loadVideo4", (v) => {
-	return YouTubeGetID(v);
-});
-createButton("play video", "playVideo4");
-createButton("hide video", "hideVideo4");
 
 createNewContainer("admin controls");
 createButton("become host (temporarily disconnects all users)", "resetConnection", 

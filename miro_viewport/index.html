@@ -14,6 +14,10 @@
 	font-size: 5vmin;
 }
 
+.iframeContainer {
+	pointer-events: none;
+}
+
 .controlsHidden {
 	width: 210vw !important;
 	height: 130vh !important;
@@ -76,6 +80,22 @@ body {
 	 <div class="playerOverlay"></div>
 </div>
 
+<div id="iframeContainer1" class="iframeContainer"  style="display:none;">
+	<iframe id="iframe1" class="ytPlayer"></iframe>
+</div>
+
+<div id="iframeContainer2" class="iframeContainer"  style="display:none;">
+	<iframe id="iframe2" class="ytPlayer"></iframe>
+</div>
+
+<div id="iframeContainer3" class="iframeContainer"  style="display:none;">
+	<iframe id="iframe3" class="ytPlayer"></iframe>
+</div>
+
+<div id="iframeContainer4" class="iframeContainer"  style="display:none;">
+	<iframe id="iframe4" class="ytPlayer"></iframe>
+</div>
+
 <script type="text/javascript">
 
 
@@ -94,6 +114,7 @@ document.getElementById("miroIframe").src = decodeURI(miroUrl);
 if (urlParams.has("i")) {
 	instanceId += urlParams.get("i");
 }
+	console.log(instanceId);
 
 history.replaceState({}, null, window.location.href.split('?')[0]);
 
@@ -112,6 +133,29 @@ let players = {
 	"3": player3,
 	"4": player4,
 }
+
+let iFrame1 = document.getElementById("iframe1");
+let iFrame2 = document.getElementById("iframe2");
+let iFrame3 = document.getElementById("iframe3");
+let iFrame4 = document.getElementById("iframe4");
+let iFrames = {
+	"1": iFrame1,
+	"2": iFrame2,
+	"3": iFrame3,
+	"4": iFrame4,
+}
+
+let iFrameContainer1 = document.getElementById("iframeContainer1");
+let iFrameContainer2 = document.getElementById("iframeContainer2");
+let iFrameContainer3 = document.getElementById("iframeContainer3");
+let iFrameContainer4 = document.getElementById("iframeContainer4");
+let iFrameContainers = {
+	"1": iFrameContainer1,
+	"2": iFrameContainer2,
+	"3": iFrameContainer3,
+	"4": iFrameContainer4,
+}
+
 // init player
 function onYouTubeIframeAPIReady() {
 	let playerOptions = {
@@ -220,6 +264,18 @@ let dataReceivedCallback = (data) => {
 	  		players[playerIndex].loadVideoById(data.slice(10));
 	  		document.querySelector("#playerContainer" + playerIndex).style.display = "";
 	  	}
+	  	else if (data.startsWith("showIFrame")) {
+	  		let iframeIndex = data[10];
+	  		iFrameContainers[iframeIndex].style.display = "";
+	  	}
+	  	else if (data.startsWith("hideIFrame")) {
+	  		let iframeIndex = data[10];
+	  		iFrameContainers[iframeIndex].style.display = "none";
+	  	}
+	  	else if (data.startsWith("loadIFrame")) {
+	  		let iframeIndex = data[10];
+	  		iFrames[iframeIndex].src = data.slice(11);
+	  	}
 	  	else if (data.startsWith("stopAllAudio")) {
 	  		for (let key in audios) {
 	  			let audio = audios[key];
@@ -259,9 +315,9 @@ let dataReceivedCallback = (data) => {
 	  		anime({
 				  targets: '#fadeOverlay',
 				  opacity: 0,
-				  // complete: function(anim) {
-			  	// 	fadeOverlay.style.display = "none";
-				  // }
+				  complete: function(anim) {
+			  		fadeOverlay.style.display = "none";
+				  }
 				});
 	  	}
 	  };
