@@ -53,6 +53,10 @@ textarea {
 <script src="peer.min.js"></script>
 <script src="serverless_rooms.js"></script>
 </head>
+
+<!-- --------------------------------------------------- -->
+<!-- -------------     TEMPLATES            ------------ -->
+<!-- --------------------------------------------------- -->
 <template id="input-button-template">
 <div class="field has-addons">
   <div class="control is-expanded">
@@ -87,6 +91,10 @@ textarea {
 	</div>
 </div>
 </template>
+<!-- --------------------------------------------------- -->
+<!-- ------------- END TEMPLATES            ------------ -->
+<!-- --------------------------------------------------- -->
+
 <body>
 <div id="fullscreenContainer">
 	<div id="fullscreenContent" class="tile is-ancestor is-horizontal">
@@ -139,6 +147,10 @@ textarea {
 <textarea id="notes"></textarea>
 
 <script type="text/javascript">
+
+// ------------------------------------------------------
+// --------------  SETUP             --------------------
+// ------------------------------------------------------
 let instanceId = "immersive_miro";
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -157,31 +169,12 @@ if (window.localStorage.getItem("miroUrl") != null) {
 
 if (document.getElementById("notes").value == "") {
 	document.getElementById("notes").value = `this text area is for holding notes.
-feel free to delete these instructions to have your own notes, they will be saved on refresh. notes are specific to specific instances.
-
-if you ever want to get the instructions back, delete everything in this text field and refresh.
-
-the instance field at the top allows for different pairings of controller URLs and user URLs. enter a new ID in that field to create an instance. The page will automatically refresh to switch to that instance.
-the Miro embed link field lets you specify which Miro board to show to users. Miro boards must be created specifically for being publicly embedded, see here for more information: https://help.miro.com/hc/en-us/articles/360016335640-Embedding-Editable-Boards-into-Websites
-make sure to only take the URL from the embed code
-
-user URLs contain the Miro board link AND the controller instance id. copy this link and share it to users to have them join the experience. you can use a URL shortener to make this URL shorter.
-
-clicking any buttons on a controller causes the specified action to occur on all users on that instance.
-audio must be a publicly hosted audio file. mp3 is recommended as it has wide browser support.
-
-videos must be a youtube video. while the video is playing, mouse input is disabled for users so they cannot pause or scrub the video.
-
-if the panel to the left of these notes are green--this tab is the "host" tab and all users connect to it.
-you can close the host tab safely, everyone will reconnect to a new host after a couple seconds.
-
-if you want to force a controller to be the host, click the become host button.
-all users and controller tabs will be temporarily disconnected while the host is established.
+	every time a change is made, all controllers on this instance get a copy of your notes. you can use this space to share links with each other or communicate.
 `
 }
 
 document.getElementById("notes").oninput = () => {
-	window.localStorage.setItem("notes" + instanceId, document.getElementById("notes").value);
+	roomConnection.message("notes" + document.getElementById("notes").value);
 }
 
 document.getElementById("instanceId").onchange = () => {
@@ -215,6 +208,12 @@ function YouTubeGetID(url){
     return ID;
 }
 
+
+
+// ------------------------------------------------------
+// --------------  TEMPLATES         --------------------
+// ------------------------------------------------------
+
 let inputButtonTemplate = document.getElementById('input-button-template').innerHTML;
 let renderInputButton = Handlebars.compile(inputButtonTemplate);
 let buttonTemplate = document.getElementById('button-template').innerHTML;
@@ -227,6 +226,12 @@ let renderCheckbox = Handlebars.compile(checkboxTemplate);
 let containerTemplate = document.getElementById('container-template').innerHTML;
 let renderContainer = Handlebars.compile(containerTemplate);
 
+
+
+// ------------------------------------------------------
+// --------------  PAGE LAYOUT FUNCTIONS ----------------
+// ------------------------------------------------------
+
 let topLevelContainer = document.getElementById("leftColumn");
 let container = document.getElementById("leftColumn");
 let isCurrentlyDefaultContainer = false;
@@ -237,12 +242,6 @@ let createNewContainer = function(title) {
 	while (container.children.length > 0) {
 		container = container.children[container.children.length - 1];
 	}
-	// container = document.createElement("div");
-	// container.classList.add("tile");
-	// container.classList.add("is-parent");
-	// container.classList.add("box")
-
-	// topLevelContainer.appendChild(container);
 }
 let switchColumns = function() {
 	topLevelContainer = document.getElementById("rightColumn");
@@ -306,6 +305,11 @@ let createSlider = function(label, message, parseFunc, extraFunc) {
 	myInput.oninput = debounced;
 }
 
+
+
+// ------------------------------------------------------
+// --------------  MESSAGING SETUP   --------------------
+// ------------------------------------------------------
 let roomConnection = null;
 
 
@@ -316,32 +320,25 @@ let dataReceivedCallback = (data) => {
 			resetRoomConnection();
 		}, 5000);
 	}
+	if (data.startsWith("notes")) {
+		document.getElementById("notes").value =
+			data.slice(5);
+	}
 }
 let resetRoomConnection = () => {
 		roomConnection = serverlessRooms.joinRoom(instanceId);
 		roomConnection.on("message",dataReceivedCallback);
 		roomConnection.on("status", function(message) {
 			console.log(message);
-			// 	if (message == "host") {
-			// console.log(message);
-			// 		document.getElementById("fullscreenContent").className = "host";
-			// 	}
-			// 	else {
-			// 		document.getElementById("fullscreenContent").className = "";
-			// 	}
 			});
 }
 resetRoomConnection();
-// var peer = new Peer("work-aaron-project_immerse_controller");
-// peer.on('error', console.log);
-// peer.on('open', function(id) {
-//   console.log('My peer ID is: ' + id);
-// });
-// peer.on("connection", function(conn) {
-//   // Receive messages
-//   conn.on('data', function(data) {
-//     console.log('Received', data);
-//   });
+
+
+
+// ------------------------------------------------------
+// --------------  CONTROL PANEL CREATION ---------------
+// ------------------------------------------------------
 
 createNewContainer("controls");
 createButton("stop all audio", "stopAllAudio");
@@ -386,7 +383,6 @@ createButton("stop sound", "stopSound4");
 createSlider("volume", "volumeSound4");
 createCheckbox("loop", "loopSound4");
 
-//
 switchColumns();
 
 createNewContainer("effects");
@@ -430,9 +426,7 @@ createButton("become host (temporarily disconnects all users)", "resetConnection
 					roomConnection.close();
 					resetRoomConnection();
 				}, 1000);
-		});;
-
-// })
+		});
 
 </script>
 </body>
