@@ -5,8 +5,8 @@ cover: cover.jpg
 date:   2021-01-31 12:00:00
 categories: 
 permalink: crystalball
-size: small
-cardImage: albums/crystalball/cover.png
+size: medium
+cardImage: albums/crystalball/0.png
 folder: /albums/crystalball
 ---
 
