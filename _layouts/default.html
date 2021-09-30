@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>{{ page.title }} | aaron.work</title>
-      <meta name="viewport" content="width=device-width">
 
-      <!-- bulma -->
-      <link rel="stylesheet" href="/css/bulma.css">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{{ page.title }} | aaron.work</title>
+  <meta name="viewport" content="width=device-width">
 
-      <!-- syntax highlighting CSS -->
-      <link rel="stylesheet" href="/css/syntax.css">
+  <!-- bulma -->
+  <link rel="stylesheet" href="/css/bulma.css">
 
-      <!-- Custom CSS -->
-      <link rel="stylesheet" href="/css/main.css">
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="/css/syntax.css">
 
-      <!-- Responsive CSS -->
-      <link rel="stylesheet" href="/css/responsive.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/main.css">
 
-      <!-- Google Fonts -->
-      <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
-      <link href='http://fonts.googleapis.com/css?family=Raleway:300,400,700' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <div class="site">
-      <div class="sidebar" id="sidebar">
-        <div id="left-title" class="header">
-          <h1 class="title"><a id="nametag" href="/">AARON SANTIAGO</a></h1>
-        </div>
-        <!-- <div class="posts">
+  <!-- Responsive CSS -->
+  <link rel="stylesheet" href="/css/responsive.css">
+
+  <!-- Google Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Raleway:300,400,700' rel='stylesheet' type='text/css'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin&family=Raleway:wght@200&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div class="site">
+    <div class="sidebar" id="sidebar">
+      <div id="left-title" class="header">
+        <h1 class="title"><a id="nametag" href="/">AARON SANTIAGO</a></h1>
+      </div>
+      <!-- <div class="posts">
           <ul class="posts-list">
             <li class="tagline">WORKS</li>
             {% for post in site.posts %}
@@ -40,27 +46,28 @@
             {% endfor %}
           </ul>
         </div> -->
-        <div class="footer">
-          <span id="footer-links">
-            <p><a href="/about" class="footer-link">about</a></p>
-            <p><a href="/contact" class="footer-link">contact</a></p>
-          </span>
-        </div>
+      <div class="footer">
+        <span id="footer-links">
+          <p><a href="/about" class="footer-link">about</a></p>
+          <p><a href="/contact" class="footer-link">contact</a></p>
+        </span>
       </div>
-
-        {{ content }}
-
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="/scripts/masonry.pkgd.js" type="text/javascript"></script>
-    <script src="/scripts/responsive.js" type="text/javascript"></script>
-    <script>
-      $('#masonrygrid').masonry({
-        // set itemSelector so .grid-sizer is not used in layout
-        itemSelector: '.grid-item',
-        // use element for option
-        columnWidth: '.grid-sizer'
-      })</script>
-    {% include lightbox.html %}
-  </body>
+
+    {{ content }}
+
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/scripts/masonry.pkgd.js" type="text/javascript"></script>
+  <script src="/scripts/responsive.js" type="text/javascript"></script>
+  <script>
+    $('#masonrygrid').masonry({
+      // set itemSelector so .grid-sizer is not used in layout
+      itemSelector: '.grid-item',
+      // use element for option
+      columnWidth: '.grid-sizer'
+    })</script>
+  {% include lightbox.html %}
+</body>
+
 </html>

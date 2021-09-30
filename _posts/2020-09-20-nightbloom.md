@@ -5,7 +5,6 @@ cover: cover.jpg
 date:   2020-09-20 12:00:00
 categories: 
 permalink: nightbloom
-size: medium
 cardImage: albums/nightbloom/4.png
 folder: /albums/nightbloom
 ---
