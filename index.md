@@ -6,7 +6,6 @@ date:   2013-12-09 12:00:00
 ---
 
 <div id="masonrygrid" class="grid">
-<div class="grid-sizer"></div>
 {% for post in site.posts %}
 {% if post.size == "big" %}
 <div class="{{ post.gridclass }} grid-item big-grid-item">
@@ -32,4 +31,5 @@ date:   2013-12-09 12:00:00
     </a>
 </div>
 {% endfor %}
+<div class="grid-sizer"></div>
 </div>
