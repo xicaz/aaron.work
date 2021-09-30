@@ -1,14 +1,13 @@
 
-#nametag {
-    position: absolute;
-    top: 5vh;
-    left: 10vh;
-    transform: rotate(90deg);
-    width: 140vh;
-    transform-origin: top left 0;
-    margin: 0;
-    text-align: left;
-    font-size: 11.5vh;
+#nametag {position: absolute;
+  transform: rotate(-90deg);
+  bottom: -10vh;
+  left: 7.3vh;
+  width: 100vh;
+  transform-origin: top left 0;
+  margin: 0;
+  text-align: right;
+  font-size: 11.5vh;
 }
 
 a:hover {
@@ -116,9 +115,6 @@ a:hover {
 .big-grid-item {
   width: 95%;
   margin: 1.5%;
-}
-#nametag {
-    font-size: 9.5vh;
 }
 }
 

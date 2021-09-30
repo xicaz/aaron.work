@@ -1,0 +1,57 @@
+---
+layout: default
+---
+<style>
+  #imgGallery {
+    width: 45%;
+    height: 100vh;
+    position: absolute;
+    right: 0;
+    top: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+
+  #postContainer {
+    width: 45%;
+    margin-right: 1em;
+  }
+
+  @media (max-width:640px) {
+
+    #postContainer {
+      width: unset;
+      margin-right: unset;
+    }
+
+    #imgGallery {
+      width: 100%;
+      height: unset;
+      top: unset;
+      position: unset;
+      bottom: 0;
+    }
+  }
+</style>
+<div class="content" id="home">
+  <div id="sidebar-button">
+    <span id="sidebar-img" src="/images/sidebar-button.png">
+      &#9776; </span> <a id="right-title" href="/">aaron santiago</a>
+  </div>
+
+  <div>
+    <div id="postContainer" class="post">
+      <div id="post-info">
+        <div id="info-container">
+          <h1 id="title">{{ page.title }}</h1>
+          <!--<span id="date">{{ page.date | date_to_string }}</span>-->
+        </div>
+      </div>
+      {{ content }}
+    </div>
+    <div id="imgGallery">
+      {% include image-gallery.html folder=page.folder %}
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: lightboxPost
 title: nightbloom
 cover: cover.jpg
 date:   2020-09-20 12:00:00
@@ -7,6 +7,7 @@ categories:
 permalink: nightbloom
 size: medium
 cardImage: albums/nightbloom/4.png
+folder: /albums/nightbloom
 ---
 
 An audio-reactive monitor sculpture made as part of floorkids.studio
@@ -20,4 +21,3 @@ performed as part of the Asian Improv aRts Midwest quarantine shows alongside [c
 
 Technologies used: TouchDesigner, Raspberry Pi, NDI
 
-{% include image-gallery.html folder="/albums/nightbloom" %}
