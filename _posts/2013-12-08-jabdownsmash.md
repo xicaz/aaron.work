@@ -6,6 +6,7 @@ date:   2013-12-09 12:00:00
 categories: posts
 permalink: jabdownsmash
 folder: /albums/jds
+hidden: true
 ---
 _jabdownsmash_ is an online collection of HTML sketches.
 <!--more-->

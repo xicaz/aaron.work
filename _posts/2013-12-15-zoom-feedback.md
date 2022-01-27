@@ -6,6 +6,7 @@ date:   2013-12-15 12:00:00
 categories: 
 permalink: zoom-feedback
 folder: /albums/zoom-feedback
+hidden: true
 ---
 
 An interactive zoom session I led at ITP Camp 2020.

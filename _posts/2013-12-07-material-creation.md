@@ -5,6 +5,7 @@ cover: cover.jpg
 date:   2013-12-09 12:00:00
 permalink: opulence
 folder: /albums/opulence
+hidden: true
 ---
 
 Experiments with different mediums to create large canvases of busy textures.
