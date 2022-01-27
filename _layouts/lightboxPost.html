@@ -9,8 +9,7 @@ layout: default
     right: 0;
     top: 0;
     overflow-y: scroll;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
+    overscroll-behavior: none;
   }
 
   #postContainer {
@@ -19,12 +18,10 @@ layout: default
   }
 
   @media (max-width:640px) {
-
     #postContainer {
       width: unset;
       margin-right: unset;
     }
-
     #imgGallery {
       width: 100%;
       height: unset;
